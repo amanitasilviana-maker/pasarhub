@@ -3,108 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PasarHub - Pusat Kontrol & Escrow</title>
+    <title>PasarHub - Solusi Belanja Hiperlokal</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
         :root {
             --gojek-green: #00AA13;
             --gojek-dark: #1C1C1C;
-            --gojek-gray: #6A6A6A;
-            --bg-light: #F6F8FB;
-            --blue-accent: #0077M6;
+            --gojek-gray: #4A4A4A;
+            --gojek-light: #F2F4F7;
+            --orange-badge: #FF8106;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-light); color: var(--gojek-dark); padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; }
+        body { background-color: var(--gojek-light); color: var(--gojek-dark); padding-bottom: 120px; }
         
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        .back-btn { text-decoration: none; color: var(--gojek-gray); font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-        h2 { font-size: 20px; font-weight: 700; }
+        .gojek-header { background: white; padding: 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .location-bar { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+        .location-bar i { color: #E52727; font-size: 18px; }
+        .location-title { font-weight: 700; color: var(--gojek-dark); }
+        .location-sub { color: var(--gojek-gray); font-size: 12px; margin-top: 2px; }
 
-        .card { background: white; border-radius: 16px; padding: 18px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid #EAECEF; }
-        .card-title { font-size: 14px; font-weight: 700; text-transform: uppercase; color: var(--gojek-gray); letter-spacing: 0.5px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+        .promo-banner { margin: 16px; background: linear-gradient(135deg, #00aa13 0%, #008c10 100%); padding: 20px; border-radius: 16px; color: white; position: relative; overflow: hidden; }
+        .promo-banner h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+        .promo-banner p { font-size: 12px; opacity: 0.9; }
+
+        .categories-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 0 16px; margin-bottom: 24px; text-align: center; }
+        .category-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
+        .category-icon { width: 50px; height: 50px; border-radius: 50px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; }
+        .cat-green { background: var(--gojek-green); }
+        .cat-orange { background: var(--orange-badge); }
+        .cat-blue { background: #00AED6; }
+        .cat-purple { background: #8644A2; }
+        .category-item span { font-size: 11px; font-weight: 600; color: var(--gojek-gray); }
+
+        .section-title { padding: 0 16px; font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+        .merchant-container { padding: 0 16px; display: flex; flex-direction: column; gap: 16px; }
         
-        /* Saldo Wallet List */
-        .wallet-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #F0F2F5; }
-        .wallet-item:last-child { border: none; padding-bottom: 0; }
-        .merchant-name { font-size: 14px; font-weight: 600; }
-        .merchant-balance { color: var(--gojek-green); font-weight: 700; font-size: 15px; }
-
-        /* Order Box & Splitting Display */
-        .order-badge { background: #FFF3E0; color: #E65100; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 700; width: fit-content; }
-        .order-badge.success-badge { background: #E8F5E9; color: var(--gojek-green); }
-        .tx-id { font-family: monospace; font-size: 13px; color: var(--gojek-gray); margin-top: 6px; }
-        .total-payment { font-size: 16px; font-weight: 700; margin: 10px 0; }
-
-        .splitting-box { background: #F8FAFC; border-left: 4px solid #00AED6; padding: 12px; margin: 10px 0; border-radius: 0 12px 12px 0; }
-        .split-title { font-size: 12px; font-weight: 700; color: #008DAE; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+        .product-card-label { background: white; border-radius: 16px; padding: 14px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.02); transition: 0.2s; border: 2px solid transparent; cursor: pointer; position: relative; display: flex !important; flex-direction: row !important; }
+        .product-card-label:hover { border-color: var(--gojek-green); }
         
-        .action-btn { background: #00AA13; color: white; border: none; padding: 12px; border-radius: 50px; font-weight: 700; cursor: pointer; width: 100%; text-align: center; margin-top: 14px; box-shadow: 0 4px 10px rgba(0, 170, 19, 0.2); transition: 0.2s; }
-        .action-btn:hover { background: #009410; }
+        .product-info { display: flex; flex-direction: column; gap: 4px; flex-grow: 1; }
+        .merchant-tag { background: #EAF9EB; color: var(--gojek-green); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; width: fit-content; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+        .product-name { font-size: 14px; font-weight: 600; color: var(--gojek-dark); }
+        .product-price { font-size: 14px; font-weight: 700; color: var(--gojek-dark); }
+        
+        .checkmark { width: 24px; height: 24px; border: 2px solid #BDC3C7; border-radius: 6px; transition: 0.2s; display: flex; align-items: center; justify-content: center; background: white; flex-shrink: 0; }
+        .real-checkbox { display: none; }
+        
+        .real-checkbox:checked ~ .checkmark { background-color: var(--gojek-green); border-color: var(--gojek-green); }
+        .real-checkbox:checked ~ .checkmark:after { content: "\f00c"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: white; font-size: 12px; }
+
+        .floating-cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 16px; box-shadow: 0 -4px 16px rgba(0,0,0,0.08); border-radius: 20px 20px 0 0; display: flex; flex-direction: column; gap: 10px; z-index: 999; }
+        .info-fee { display: flex; justify-content: space-between; font-size: 12px; color: var(--gojek-gray); padding: 0 4px; }
+        .gojek-btn { background: var(--gojek-green); color: white; font-size: 15px; font-weight: 700; border: none; padding: 14px; border-radius: 50px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; width: 100%; transition: 0.2s; box-shadow: 0 4px 12px rgba(0, 170, 19, 0.3); }
+        .gojek-btn:hover { background: #009410; }
+        
+        .header-action-btn { background: #E8F5E9; color: var(--gojek-green); padding: 8px 14px; border-radius: 20px; text-decoration: none; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+        
+        @media (min-width: 600px) {
+            body { max-width: 500px; margin: 0 auto; box-shadow: 0 0 20px rgba(0,0,0,0.05); background: #fafafa; }
+            .gojek-header, .floating-cart-bar { max-width: 500px; left: 50%; transform: translateX(-50%); }
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h2>Pusat Kontrol PasarHub</h2>
-            <a href="/" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Belanja Lagi</a>
-        </header>
-
-        <!-- Seksi Dompet Digital Pedagang Mitra -->
-        <div class="card">
-            <div class="card-title"><i class="fa-solid fa-wallet" style="color: var(--gojek-green);"></i> Dompet Digital Mitra UMKM (Potongan 0%)</div>
-            <% Object.keys(saldo).forEach(pedagang => { %>
-                <div class="wallet-item">
-                    <span class="merchant-name"><%= pedagang %></span>
-                    <span class="merchant-balance">Rp <%= saldo[pedagang].toLocaleString('id-ID') %></span>
+    <div class="gojek-header">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="location-bar">
+                <i class="fa-solid fa-location-dot"></i>
+                <div>
+                    <div class="location-title">Kawasan Industri & Kampus Terpadu <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: var(--gojek-gray);"></i></div>
+                    <div class="location-sub">Pengiriman ke Hub Utama Gedung Logistik</div>
                 </div>
+            </div>
+            <a href="/dashboard" class="header-action-btn">
+                <i class="fa-solid fa-chart-line"></i> Hub Admin
+            </a>
+        </div>
+    </div>
+
+    <div class="promo-banner">
+        <h3>Kantong Hemat Lintas Lapak!</h3>
+        <p>Beli dari beberapa pedagang pasar sekaligus, ongkir flat cuma Rp 5.000 lewat koordinasi kurir Hub.</p>
+    </div>
+
+    <div class="categories-grid">
+        <div class="category-item">
+            <div class="category-icon cat-green"><i class="fa-solid fa-drumstick-bite"></i></div>
+            <span>Daging</span>
+        </div>
+        <div class="category-item">
+            <div class="category-icon cat-orange"><i class="fa-solid fa-carrot"></i></div>
+            <span>Sayuran</span>
+        </div>
+        <div class="category-item">
+            <div class="category-icon cat-blue"><i class="fa-solid fa-mortar-pestle"></i></div>
+            <span>Bumbu</span>
+        </div>
+        <div class="category-item">
+            <div class="category-icon cat-purple"><i class="fa-solid fa-fish"></i></div>
+            <span>Seafood</span>
+        </div>
+    </div>
+
+    <div class="section-title">Rekomendasi Lapak Terdekat</div>
+
+    <form action="/checkout" method="POST">
+        <div class="merchant-container">
+            <% produk.forEach(item => { %>
+                <label class="product-card-label" for="p-<%= item.id %>">
+                    <img src="<%= item.gambar %>" alt="<%= item.nama %>" style="width: 75px; height: 75px; border-radius: 12px; object-fit: cover; margin-right: 12px; background: #eef2f5; flex-shrink: 0;">
+                    <div class="product-info">
+                        <div class="merchant-tag">
+                            <i class="fa-solid fa-store"></i> <%= item.pedagang %>
+                        </div>
+                        <div class="product-name"><%= item.nama %></div>
+                        <div class="product-price">Rp <%= item.harga.toLocaleString('id-ID') %></div>
+                    </div>
+                    <input type="checkbox" name="itemDipilih" value="<%= item.id %>" id="p-<%= item.id %>" class="real-checkbox">
+                    <span class="checkmark"></span>
+                </label>
             <% }) %>
         </div>
 
-        <!-- Seksi Monitor Riwayat & Engine Logika Pemecahan Data -->
-        <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--gojek-dark);">Logika Monitor Bisnis (Order Splitting)</h3>
-        
-        <% if(transaksi.length === 0) { %>
-            <div class="card" style="text-align: center; color: var(--gojek-gray); padding: 40px 20px;">
-                <i class="fa-solid fa-basket-shopping" style="font-size: 40px; margin-bottom: 12px; opacity: 0.3;"></i>
-                <p>Belum ada aktivitas transaksi masuk dari konsumen.</p>
+        <div class="floating-cart-bar">
+            <div class="info-fee">
+                <span><i class="fa-solid fa-motorcycle"></i> Ongkir Hiperlokal Multi-lapak</span>
+                <strong>Rp 5.000</strong>
             </div>
-        <% } %>
-        
-        <% transaksi.reverse().forEach(trx => { %>
-            <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                    <div>
-                        <div class="tx-id">ID Induk: <strong><%= trx.idInduk %></strong></div>
-                        <div class="total-payment">Total Bayar: Rp <%= trx.totalBayar.toLocaleString('id-ID') %></div>
-                    </div>
-                    <div class="order-badge <%= trx.status.includes('100%') ? 'success-badge' : '' %>">
-                        <i class="fa-solid <%= trx.status.includes('100%') ? 'fa-circle-check' : 'fa-clock' %>"></i> <%= trx.status %>
-                    </div>
-                </div>
-
-                <div style="margin-top: 10px; font-size: 13px; font-weight: 600; color: var(--gojek-gray);">Hasil Pemecahan Otomatis Sistem Backend:</div>
-                
-                <% trx.subOrders.forEach(sub => { %>
-                    <div class="splitting-box">
-                        <div class="split-title"><i class="fa-solid fa-scissors"></i> Sub-Order: <%= sub.pedagang %></div>
-                        <div style="font-size: 13px;">Item: <strong><%= sub.items.join(', ') %></strong></div>
-                        <div style="font-size: 13px; margin-top: 2px;">Hak Bersih UMKM: <strong style="color: var(--gojek-dark);">Rp <%= sub.totalSub.toLocaleString('id-ID') %></strong></div>
-                    </div>
-                <% }) %>
-
-                <% if(trx.status !== "Dana Dicairkan ke Pedagang 100%") { %>
-                    <form action="/konfirmasi-terima/<%= trx.idInduk %>" method="POST">
-                        <button type="submit" class="action-btn">
-                            <i class="fa-solid fa-truck-ramp-box"></i> Konfirmasi Pesanan Diterima Konsumen
-                        </button>
-                    </form>
-                <% } %>
-            </div>
-        <% }) %>
-    </div>
+            <button type="submit" class="gojek-btn">
+                <i class="fa-solid fa-wallet"></i> Pesan & Bayar Sekali (QRIS)
+            </button>
+        </div>
+    </form>
 
 </body>
 </html>
