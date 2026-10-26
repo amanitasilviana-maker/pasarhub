@@ -8,7 +8,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// DATABASE DENGAN PILIHAN LENGKAP & LINK FOTO CADANGAN
+// Katalog Komoditas Hiperlokal Multi-Kios Pasar Tradisional
 let produkPasar = [
     { id: 101, nama: "Daging Sapi Has Dalam (500g)", harga: 65000, pedagang: "Lapak Bu Joko (Daging)" },
     { id: 102, nama: "Ayam Potong Segar (1 Ekor)", harga: 34000, pedagang: "Lapak Bu Joko (Daging)" },
@@ -34,11 +34,9 @@ app.get('/', (req, res) => {
     res.render('index', { produk: produkPasar, saldo: saldoPedagang, transaksi: semuaTransaksi });
 });
 
-// PERBAIKAN UTAMA: BACKEND SEKARANG MENERIMA VARIABEL METODE PEMBAYARAN BARU ALA GOJEK
 app.post('/checkout', (req, res) => {
     const { itemDipilih, metodeBayar } = req.body;
     
-    // Jika tidak ada barang yang dicentang, kembalikan ke halaman utama agar tidak crash
     if (!itemDipilih) return res.redirect('/');
 
     const daftarId = Array.isArray(itemDipilih) ? itemDipilih.map(Number) : [Number(itemDipilih)];
@@ -61,7 +59,6 @@ app.post('/checkout', (req, res) => {
 
     let idTransaksiInduk = "TXH-" + Date.now();
     
-    // Menyimpan informasi jenis metode pembayaran yang dipilih konsumen
     let transaksiBaru = {
         idInduk: idTransaksiInduk,
         totalBayar: totalBayar,
