@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PasarHub - Dasbor Pengelola</title>
+    <style>
+        body { font-family: sans-serif; max-width: 700px; margin: auto; padding: 20px; background: #f4f6f9; }
+        .box { background: white; padding: 15px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .sub-box { background: #fdfefe; border-left: 4px solid #3498db; padding: 10px; margin: 10px 0; font-size: 14px; }
+        .btn-done { background: #3498db; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+        .status { font-weight: bold; color: #e67e22; }
+        .success { color: #27ae60 !important; }
+    </style>
+</head>
+<body>
+    <h2>📊 Dasbor Sistem PasarHub</h2>
+    <a href="/" style="color: #2980b9; text-decoration: none;">⬅️ Kembali Belanja</a>
+
+    <h3>💰 Kantong Saldo Mitra UMKM (100% Utuh)</h3>
+    <div class="box">
+        <% Object.keys(saldo).forEach(pedagang => { %>
+            <p><strong><%= pedagang %>:</strong> <span class="success">Rp <%= saldo[pedagang].toLocaleString() %></span></p>
+        <% }) %>
+    </div>
+
+    <h3>📦 Riwayat Transaksi & Order Splitting Engine</h3>
+    <% if(transaksi.length === 0) { %>
+        <p>Belum ada transaksi masuk.</p>
+    <% } %>
+    
+    <% transaksi.reverse().forEach(trx => { %>
+        <div class="box">
+            <p><strong>ID Transaksi Induk:</strong> `<%= trx.idInduk %>`</p>
+            <p><strong>Total Dibayar Konsumen:</strong> Rp <%= trx.totalBayar.toLocaleString() %></p>
+            <p><strong>Status Dompet Escrow:</strong> <span class="status <%= trx.status.includes('100%') ? 'success' : '' %>"><%= trx.status %></span></p>
+            
+            <h4>Hasil Pecahan Kodingan Backend (Sub-Order):</h4>
+            <% trx.subOrders.forEach(sub => { %>
+                <div class="sub-box">
+                    <strong>Tujuan: <%= sub.pedagang %></strong><br>
+                    Barang: <%= sub.items.join(', ') %><br>
+                    Uang yang Hak Pedagang: <strong>Rp <%= sub.totalSub.toLocaleString() %></strong>
+                </div>
+            <% }) %>
+
+            <% if(trx.status !== "Dana Dicairkan ke Pedagang 100%") { %>
+                <form action="/konfirmasi-terima/<%= trx.idInduk %>" method="POST" style="margin-top: 15px;">
+                    <button type="submit" class="btn-done">✓ Konsumen Klik "Pesanan Diterima"</button>
+                </form>
+            <% } %>
+        </div>
+    <% }) %>
+</body>
+</html>
