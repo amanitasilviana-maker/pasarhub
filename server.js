@@ -1,12 +1,15 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const fs = require('fs');
 const PORT = process.env.PORT || 3000;
 
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+// Set EJS engine for legacy support
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 // DATABASE PRODUK PASAR LENGKAP
 let produkPasar = [
@@ -22,92 +25,42 @@ let produkPasar = [
 ];
 
 let saldoPedagang = {
-    "Lapak Bu Joko (Daging)": 0,
-    "Lapak Pak Slamet (Sayur)": 0,
-    "Lapak Mak Sumi (Bumbu)": 0,
-    "Kios Seafood Cak To": 0
+    "Lapak Bu Joko (Daging)": 99000,
+    "Lapak Pak Slamet (Sayur)": 25000,
+    "Lapak Mak Sumi (Bumbu)": 19500,
+    "Kios Seafood Cak To": 54000
 };
 
 let semuaTransaksi = [];
 
-app.get('/', (req, res) => {
+// API Endpoints for React Frontend
+app.get('/api/produk', (req, res) => res.json(produkPasar));
+app.get('/api/saldo', (req, res) => res.json(saldoPedagang));
+app.get('/api/transaksi', (req, res) => res.json(semuaTransaksi));
+
+// Serve React production build from 'dist' if available
+const distPath = path.join(__dirname, 'dist');
+if (fs.existsSync(distPath)) {
+    app.use(express.static(distPath));
+}
+
+// Legacy EJS Views
+app.get('/legacy', (req, res) => {
     res.render('index', { produk: produkPasar, saldo: saldoPedagang, transaksi: semuaTransaksi });
 });
 
-// LOGIKA CHECKOUT YANG DIUPGRADE AGAR ANTI-CRASH & AMAN
-app.post('/checkout', (req, res) => {
-    try {
-        const { itemDipilih, metodeBayar } = req.body;
-        
-        // Proteksi 1: Jika user tidak memilih barang apapun
-        if (!itemDipilih) {
-            return res.redirect('/');
-        }
-
-        // Proteksi 2: Memastikan item yang dipilih selalu berbentuk Array agar tidak error saat di-looping
-        let daftarId = [];
-        if (Array.isArray(itemDipilih)) {
-            daftarId = itemDipilih.map(Number);
-        } else {
-            daftarId = [Number(itemDipilih)];
-        }
-
-        let itemKeranjang = produkPasar.filter(p => daftarId.includes(p.id));
-
-        if (itemKeranjang.length === 0) {
-            return res.redirect('/');
-        }
-
-        let totalBarang = itemKeranjang.reduce((sum, item) => sum + item.harga, 0);
-        let ongkirFlat = 5000;
-        let totalBayar = totalBarang + ongkirFlat;
-
-        // Proses Order Splitting Engine otomatis
-        let subOrders = {};
-        itemKeranjang.forEach(item => {
-            if (!subOrders[item.pedagang]) {
-                subOrders[item.pedagang] = { pedagang: item.pedagang, items: [], totalSub: 0 };
-            }
-            subOrders[item.pedagang].items.push(item.nama);
-            subOrders[item.pedagang].totalSub += item.harga;
-        });
-
-        let idTransaksiInduk = "TXH-" + Date.now();
-        
-        let transaksiBaru = {
-            idInduk: idTransaksiInduk,
-            totalBayar: totalBayar,
-            subOrders: Object.values(subOrders),
-            metodeBayar: metodeBayar || "GoPay", 
-            status: "Tertahan di Escrow (Hub)"
-        };
-
-        semuaTransaksi.push(transaksiBaru);
-        return res.redirect('/dashboard');
-
-    } catch (error) {
-        console.error("Terjadi error pada checkout:", error);
-        return res.redirect('/');
-    }
-});
-
-app.get('/dashboard', (req, res) => {
+app.get('/dashboard-legacy', (req, res) => {
     res.render('dashboard', { transaksi: semuaTransaksi, saldo: saldoPedagang });
 });
 
-app.post('/konfirmasi-terima/:idInduk', (req, res) => {
-    const { idInduk } = req.params;
-    let trx = semuaTransaksi.find(t => t.idInduk === idInduk);
-
-    if (trx && trx.status !== "Dana Dicairkan ke Pedagang 100%") {
-        trx.status = "Dana Dicairkan ke Pedagang 100%";
-        trx.subOrders.forEach(sub => {
-            if (saldoPedagang[sub.pedagang] !== undefined) {
-                saldoPedagang[sub.pedagang] += sub.totalSub;
-            }
-        });
+// React SPA Fallback
+app.get('*', (req, res) => {
+    const indexPath = path.join(distPath, 'index.html');
+    if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+    } else {
+        res.render('index', { produk: produkPasar, saldo: saldoPedagang, transaksi: semuaTransaksi });
     }
-    res.redirect('/dashboard');
 });
 
 app.listen(PORT, () => console.log(`PasarHub Server berjalan di port ${PORT}`));
