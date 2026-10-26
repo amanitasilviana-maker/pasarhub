@@ -27,7 +27,6 @@
         .promo-banner h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
         .promo-banner p { font-size: 12px; opacity: 0.9; }
 
-        /* Kategori Layanan Interaktif */
         .categories-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 0 16px; margin-bottom: 24px; text-align: center; }
         .category-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: transform 0.2s; }
         .category-item:hover { transform: scale(1.05); }
@@ -56,7 +55,6 @@
         .real-checkbox:checked ~ .checkmark { background-color: var(--gojek-green); border-color: var(--gojek-green); }
         .real-checkbox:checked ~ .checkmark:after { content: "\f00c"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: white; font-size: 12px; }
 
-        /* Panel Metode Pembayaran Lengkap */
         .payment-section { background: white; margin: 16px; padding: 16px; border-radius: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
         .payment-title { font-size: 13px; font-weight: 700; color: var(--gojek-gray); margin-bottom: 10px; text-transform: uppercase; }
         .payment-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
@@ -67,6 +65,7 @@
         .floating-cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 16px; box-shadow: 0 -4px 16px rgba(0,0,0,0.08); border-radius: 20px 20px 0 0; display: flex; flex-direction: column; gap: 10px; z-index: 999; }
         .info-fee { display: flex; justify-content: space-between; font-size: 12px; color: var(--gojek-gray); padding: 0 4px; }
         .gojek-btn { background: var(--gojek-green); color: white; font-size: 15px; font-weight: 700; border: none; padding: 14px; border-radius: 50px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; width: 100%; transition: 0.2s; box-shadow: 0 4px 12px rgba(0, 170, 19, 0.3); }
+        .gojek-btn:hover { background: #009410; }
         
         .header-action-btn { background: #E8F5E9; color: var(--gojek-green); padding: 8px 14px; border-radius: 20px; text-decoration: none; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
         
@@ -98,7 +97,6 @@
         <p>Beli dari beberapa pedagang pasar sekaligus, ongkir flat cuma Rp 5.000 lewat koordinasi kurir Hub.</p>
     </div>
 
-    <!-- Kategori Interaktif Bergaya Gojek dengan Aksi Klik JavaScript -->
     <div class="categories-grid">
         <div class="category-item active" onclick="filterKategori('semua', this)">
             <div class="category-icon" style="background: #7f8c8d;"><i class="fa-solid fa-border-all"></i></div>
@@ -121,13 +119,10 @@
     <div class="section-title" id="kategori-title">Semua Rekomendasi Produk</div>
 
     <form action="/checkout" method="POST">
-        <!-- Daftar Katalog Item Pasar -->
         <div class="merchant-container">
             <% produk.forEach(item => { %>
-                <!-- Menyimpan info kategori lapak di dalam atribut data-category -->
                 <div class="product-wrapper" data-category="<%= item.pedagang %>">
                     <label class="product-card-label" for="p-<%= item.id %>">
-                        <!-- Menggunakan Ikon Ilustrasi Cadangan Premium Jika Gambar Eksternal Lemah -->
                         <div style="width: 65px; height: 65px; border-radius: 12px; background: #EAF9EB; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0; color: var(--gojek-green); font-size: 24px;">
                             <% if(item.pedagang.includes('Daging')) { %> <i class="fa-solid fa-drumstick-bite"></i>
                             <% } else if(item.pedagang.includes('Sayur')) { %> <i class="fa-solid fa-carrot"></i>
@@ -141,18 +136,17 @@
                             <div class="product-price">Rp <%= item.harga.toLocaleString('id-ID') %></div>
                         </div>
                         <input type="checkbox" name="itemDipilih" value="<%= item.id %>" id="p-<%= item.id %>" class="real-checkbox">
-<span class="checkmark"></span>
-                </label>
-            </div>
-        <% }) %>
-    </div>
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+            <% }) %>
+        </div>
 
-    <!-- Pilihan Metode Pembayaran Lengkap -->
-    <div class="payment-section">
-        <div class="payment-title"><i class="fa-solid fa-credit-card"></i> Pilihan Metode Pembayaran</div>
-        <div class="payment-options">
-            <label class="pay-method">
-                <input type="radio" name="metodeBayar" value="Gopay" checked>
+        <div class="payment-section">
+            <div class="payment-title"><i class="fa-solid fa-credit-card"></i> Pilihan Metode Pembayaran</div>
+            <div class="payment-options">
+                <label class="pay-method">
+        <input type="radio" name="metodeBayar" value="Gopay" checked>
                 <i class="fa-solid fa-wallet" style="color: #00AED6;"></i> GoPay
             </label>
             <label class="pay-method">
