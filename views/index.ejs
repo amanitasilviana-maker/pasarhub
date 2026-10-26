@@ -3,32 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PasarHub - Konsumen</title>
+    <title>PasarHub - Solusi Belanja Hiperlokal</title>
+    <!-- Google Fonts & FontAwesome Ikon -->
+    <link href="https://googleapis.com" rel="stylesheet">
+    <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; background: #f4f6f9; }
-        .card { background: white; padding: 15px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .btn { background: #27ae60; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; width: 100%; }
-        .nav-link { display: block; text-align: center; margin-top: 15px; color: #2980b9; text-decoration: none; font-weight: bold; }
+        :root {
+            --gojek-green: #00AA13;
+            --gojek-dark: #1C1C1C;
+            --gojek-gray: #4A4A4A;
+            --gojek-light: #F2F4F7;
+            --orange-badge: #FF8106;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--gojek-light); color: var(--gojek-dark); padding-bottom: 100px; }
+        
+        /* Header Alamat Ala Gojek */
+        .gojek-header { background: white; padding: 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .location-bar { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+        .location-bar i { color: #E52727; font-size: 18px; }
+        .location-title { font-weight: 700; color: var(--gojek-dark); }
+        .location-sub { color: var(--gojek-gray); font-size: 12px; margin-top: 2px; }
+
+        /* Banner Utama */
+        .promo-banner { margin: 16px; background: linear-gradient(135deg, #00aa13 0%, #008c10 100%); padding: 20px; border-radius: 16px; color: white; position: relative; overflow: hidden; }
+        .promo-banner h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+        .promo-banner p { font-size: 12px; opacity: 0.9; }
+
+        /* Kategori Layanan Quick Links */
+        .categories-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 0 16px; margin-bottom: 24px; text-align: center; }
+        .category-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
+        .category-icon { width: 50px; height: 50px; border-radius: 50px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; }
+        .cat-green { background: var(--gojek-green); }
+        .cat-orange { background: var(--orange-badge); }
+        .cat-blue { background: #00AED6; }
+        .cat-purple { background: #8644A2; }
+        .category-item span { font-size: 11px; font-weight: 600; color: var(--gojek-gray); }
+
+        /* Konten Produk */
+        .section-title { padding: 0 16px; font-size: 16px; font-weight: 700; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .merchant-container { padding: 0 16px; display: flex; flex-direction: column; gap: 16px; }
+        
+        /* Card Desain Produk */
+        .product-card { background: white; border-radius: 16px; padding: 14px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.02); transition: 0.2s; border: 2px solid transparent; position: relative; cursor: pointer; }
+        .product-card:hover { border-color: var(--gojek-green); }
+        .product-info { display: flex; flex-direction: column; gap: 4px; width: 70%; }
+        .merchant-tag { background: #EAF9EB; color: var(--gojek-green); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; width: fit-content; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+        .product-name { font-size: 15px; font-weight: 600; color: var(--gojek-dark); }
+        .product-price { font-size: 14px; font-weight: 700; color: var(--gojek-dark); }
+        
+        /* Custom Checkbox Ala Gojek Check */
+        .checkbox-container { position: relative; width: 24px; height: 24px; }
+        .checkbox-container input { opacity: 0; width: 0; height: 0; }
+        .checkmark { position: absolute; top: 0; left: 0; height: 24px; width: 24px; background-color: #E4E8EE; border-radius: 6px; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .checkbox-container input:checked ~ .checkmark { background-color: var(--gojek-green); }
+        .checkmark:after { content: "\f00c"; font-family: "Font Awesome 5 Free"; font-weight: 900; color: white; font-size: 12px; display: none; }
+        .checkbox-container input:checked ~ .checkmark:after { display: block; }
+
+        /* Bottom Floating Bar Keranjang Mengambang */
+        .floating-cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 16px; box-shadow: 0 -4px 16px rgba(0,0,0,0.08); border-radius: 20px 20px 0 0; display: flex; flex-direction: column; gap: 10px; z-index: 999; }
+        .info-fee { display: flex; justify-content: space-between; font-size: 12px; color: var(--gojek-gray); padding: 0 4px; }
+        .gojek-btn { background: var(--gojek-green); color: white; font-size: 15px; font-weight: 700; border: none; padding: 14px; border-radius: 50px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; width: 100%; transition: 0.2s; box-shadow: 0 4px 12px rgba(0, 170, 19, 0.3); }
+        .gojek-btn:hover { background: #009410; transform: translateY(-1px); }
+        
+        /* Dasbor Button Atas */
+        .header-action-btn { background: #E8F5E9; color: var(--gojek-green); padding: 8px 14px; border-radius: 20px; text-decoration: none; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+        
+        @media (min-width: 600px) {
+            body { max-width: 500px; margin: 0 auto; box-shadow: 0 0 20px rgba(0,0,0,0.05); background: #fafafa; }
+            .gojek-header, .floating-cart-bar { max-width: 500px; left: 50%; transform: translateX(-50%); }
+            .floating-cart-bar { transform: translateX(-50%); }
+        }
     </style>
 </head>
 <body>
-    <h2>🛒 PasarHub (Sisi Konsumen)</h2>
-    <p>Pilih produk dari berbagai lapak berbeda dalam 1 keranjang bersama!</p>
-    
-    <form action="/checkout" method="POST">
-        <% produk.forEach(item => { %>
-            <div class="card">
-                <input type="checkbox" name="itemDipilih" value="<%= item.id %>" id="p-<%= item.id %>">
-                <label style="font-weight: bold; cursor: pointer;" for="p-<%= item.id %>">
-                    <%= item.nama %> - Rp <%= item.harga.toLocaleString() %>
-                </label>
-                <div style="font-size: 12px; color: gray; margin-left: 20px;"><%= item.pedagang %></div>
+
+    <!-- Header Lokasi Pasar & Menu Navigasi -->
+    <div class="gojek-header">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="location-bar">
+                <i class="fa-solid fa-location-dot"></i>
+                <div>
+                    <div class="location-title">Kawasan Industri & Kampus Terpadu <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: var(--gojek-gray);"></i></div>
+                    <div class="location-sub">Pengiriman ke Hub Utama Gedung Logistik</div>
+                </div>
             </div>
-        <% }) %>
-        <p style="font-size: 13px; color: #e67e22;">*Ongkir Flat Hiperlokal Rp 5.000 otomatis ditambahkan saat checkout.</p>
-        <button type="submit" class="btn">Checkout Sekali Bayar (QRIS)</button>
+            <a href="/dashboard" class="header-action-btn">
+                <i class="fa-solid fa-chart-line"></i> Hub Admin
+            </a>
+        </div>
+    </div>
+
+    <!-- Banner Info Pasarmarket -->
+    <div class="promo-banner">
+        <h3>Kantong Hemat Lintas Lapak!</h3>
+        <p>Beli dari beberapa pedagang pasar sekaligus, ongkir flat cuma Rp 5.000 lewat koordinasi kurir Hub.</p>
+    </div>
+
+    <!-- Ikon Kategori Bergaya Gojek -->
+    <div class="categories-grid">
+        <div class="category-item">
+            <div class="category-icon cat-green"><i class="fa-solid fa-drumstick-bite"></i></div>
+            <span>Daging</span>
+        </div>
+        <div class="category-item">
+            <div class="category-icon cat-orange"><i class="fa-solid fa-carrot"></i></div>
+            <span>Sayuran</span>
+        </div>
+        <div class="category-item">
+            <div class="category-icon cat-blue"><i class="fa-solid fa-mortar-pestle"></i></div>
+            <span>Bumbu</span>
+        </div>
+        <div class="category-item">
+            <div class="category-icon cat-purple"><i class="fa-solid fa-fish"></i></div>
+            <span>Seafood</span>
+        </div>
+    </div>
+
+    <div class="section-title">
+        <span>Rekomendasi Lapak Terdekat</span>
+    </div>
+
+    <!-- Daftar Katalog Item Pasar -->
+    <form action="/checkout" method="POST">
+        <div class="merchant-container">
+            <% produk.forEach(item => { %>
+                <div class="product-card" onclick="document.getElementById('p-<%= item.id %>').click();">
+                    <div class="product-info">
+                        <div class="merchant-tag">
+                            <i class="fa-solid fa-store"></i> <%= item.pedagang %>
+                        </div>
+                        <div class="product-name"><%= item.nama %></div>
+                        <div class="product-price">Rp <%= item.harga.toLocaleString('id-ID') %></div>
+                    </div>
+                    <div class="checkbox-container" onclick="event.stopPropagation();">
+                        <input type="checkbox" name="itemDipilih" value="<%= item.id %>" id="p-<%= item.id %>">
+                        <span class="checkmark"></span>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+
+        <!-- Floating Cart Mengambang di Bawah -->
+        <div class="floating-cart-bar">
+            <div class="info-fee">
+                <span><i class="fa-solid fa-motorcycle"></i> Ongkir Hiperlokal Multi-lapak</span>
+                <strong>Rp 5.000</strong>
+            </div>
+            <button type="submit" class="gojek-btn">
+                <i class="fa-solid fa-wallet"></i> Pesan & Bayar Sekali (QRIS)
+            </button>
+        </div>
     </form>
 
-    <a href="/dashboard" class="nav-link">Masuk ke Dasbor Pengelola/Pedagang ➡️</a>
 </body>
 </html>
