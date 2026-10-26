@@ -8,7 +8,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Katalog Komoditas Hiperlokal Multi-Kios Pasar Tradisional
+// DATABASE PRODUK PASAR LENGKAP
 let produkPasar = [
     { id: 101, nama: "Daging Sapi Has Dalam (500g)", harga: 65000, pedagang: "Lapak Bu Joko (Daging)" },
     { id: 102, nama: "Ayam Potong Segar (1 Ekor)", harga: 34000, pedagang: "Lapak Bu Joko (Daging)" },
@@ -34,41 +34,61 @@ app.get('/', (req, res) => {
     res.render('index', { produk: produkPasar, saldo: saldoPedagang, transaksi: semuaTransaksi });
 });
 
+// LOGIKA CHECKOUT YANG DIUPGRADE AGAR ANTI-CRASH & AMAN
 app.post('/checkout', (req, res) => {
-    const { itemDipilih, metodeBayar } = req.body;
-    
-    if (!itemDipilih) return res.redirect('/');
-
-    const daftarId = Array.isArray(itemDipilih) ? itemDipilih.map(Number) : [Number(itemDipilih)];
-    let itemKeranjang = produkPasar.filter(p => daftarId.includes(p.id));
-
-    if (itemKeranjang.length === 0) return res.redirect('/');
-
-    let totalBarang = itemKeranjang.reduce((sum, item) => sum + item.harga, 0);
-    let ongkirFlat = 5000;
-    let totalBayar = totalBarang + ongkirFlat;
-
-    let subOrders = {};
-    itemKeranjang.forEach(item => {
-        if (!subOrders[item.pedagang]) {
-            subOrders[item.pedagang] = { pedagang: item.pedagang, items: [], totalSub: 0 };
+    try {
+        const { itemDipilih, metodeBayar } = req.body;
+        
+        // Proteksi 1: Jika user tidak memilih barang apapun
+        if (!itemDipilih) {
+            return res.redirect('/');
         }
-        subOrders[item.pedagang].items.push(item.nama);
-        subOrders[item.pedagang].totalSub += item.harga;
-    });
 
-    let idTransaksiInduk = "TXH-" + Date.now();
-    
-    let transaksiBaru = {
-        idInduk: idTransaksiInduk,
-        totalBayar: totalBayar,
-        subOrders: Object.values(subOrders),
-        metodeBayar: metodeBayar || "GoPay", 
-        status: "Tertahan di Escrow (Hub)"
-    };
+        // Proteksi 2: Memastikan item yang dipilih selalu berbentuk Array agar tidak error saat di-looping
+        let daftarId = [];
+        if (Array.isArray(itemDipilih)) {
+            daftarId = itemDipilih.map(Number);
+        } else {
+            daftarId = [Number(itemDipilih)];
+        }
 
-    semuaTransaksi.push(transaksiBaru);
-    res.redirect('/dashboard');
+        let itemKeranjang = produkPasar.filter(p => daftarId.includes(p.id));
+
+        if (itemKeranjang.length === 0) {
+            return res.redirect('/');
+        }
+
+        let totalBarang = itemKeranjang.reduce((sum, item) => sum + item.harga, 0);
+        let ongkirFlat = 5000;
+        let totalBayar = totalBarang + ongkirFlat;
+
+        // Proses Order Splitting Engine otomatis
+        let subOrders = {};
+        itemKeranjang.forEach(item => {
+            if (!subOrders[item.pedagang]) {
+                subOrders[item.pedagang] = { pedagang: item.pedagang, items: [], totalSub: 0 };
+            }
+            subOrders[item.pedagang].items.push(item.nama);
+            subOrders[item.pedagang].totalSub += item.harga;
+        });
+
+        let idTransaksiInduk = "TXH-" + Date.now();
+        
+        let transaksiBaru = {
+            idInduk: idTransaksiInduk,
+            totalBayar: totalBayar,
+            subOrders: Object.values(subOrders),
+            metodeBayar: metodeBayar || "GoPay", 
+            status: "Tertahan di Escrow (Hub)"
+        };
+
+        semuaTransaksi.push(transaksiBaru);
+        return res.redirect('/dashboard');
+
+    } catch (error) {
+        console.error("Terjadi error pada checkout:", error);
+        return res.redirect('/');
+    }
 });
 
 app.get('/dashboard', (req, res) => {
@@ -82,7 +102,9 @@ app.post('/konfirmasi-terima/:idInduk', (req, res) => {
     if (trx && trx.status !== "Dana Dicairkan ke Pedagang 100%") {
         trx.status = "Dana Dicairkan ke Pedagang 100%";
         trx.subOrders.forEach(sub => {
-            saldoPedagang[sub.pedagang] += sub.totalSub;
+            if (saldoPedagang[sub.pedagang] !== undefined) {
+                saldoPedagang[sub.pedagang] += sub.totalSub;
+            }
         });
     }
     res.redirect('/dashboard');
