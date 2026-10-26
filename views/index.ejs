@@ -15,7 +15,7 @@
             --orange-badge: #FF8106;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--gojek-light); color: var(--gojek-dark); padding-bottom: 120px; }
+        body { background-color: var(--gojek-light); color: var(--gojek-dark); padding-bottom: 180px; }
         
         .gojek-header { background: white; padding: 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         .location-bar { display: flex; align-items: center; gap: 10px; font-size: 14px; }
@@ -27,9 +27,12 @@
         .promo-banner h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
         .promo-banner p { font-size: 12px; opacity: 0.9; }
 
+        /* Kategori Layanan Interaktif */
         .categories-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 0 16px; margin-bottom: 24px; text-align: center; }
-        .category-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
-        .category-icon { width: 50px; height: 50px; border-radius: 50px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; }
+        .category-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: transform 0.2s; }
+        .category-item:hover { transform: scale(1.05); }
+        .category-item.active span { color: var(--gojek-green); font-weight: 700; }
+        .category-icon { width: 50px; height: 50px; border-radius: 50px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
         .cat-green { background: var(--gojek-green); }
         .cat-orange { background: var(--orange-badge); }
         .cat-blue { background: #00AED6; }
@@ -39,24 +42,31 @@
         .section-title { padding: 0 16px; font-size: 16px; font-weight: 700; margin-bottom: 12px; }
         .merchant-container { padding: 0 16px; display: flex; flex-direction: column; gap: 16px; }
         
-        .product-card-label { background: white; border-radius: 16px; padding: 14px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.02); transition: 0.2s; border: 2px solid transparent; cursor: pointer; position: relative; }
+        .product-card-label { background: white; border-radius: 16px; padding: 14px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.02); transition: 0.2s; border: 2px solid transparent; cursor: pointer; display: flex !important; flex-direction: row !important; }
         .product-card-label:hover { border-color: var(--gojek-green); }
         
-        .product-info { display: flex; flex-direction: column; gap: 4px; width: 60%; }
+        .product-info { display: flex; flex-direction: column; gap: 4px; flex-grow: 1; }
         .merchant-tag { background: #EAF9EB; color: var(--gojek-green); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; width: fit-content; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
         .product-name { font-size: 14px; font-weight: 600; color: var(--gojek-dark); }
         .product-price { font-size: 14px; font-weight: 700; color: var(--gojek-dark); }
         
-        .checkmark { width: 24px; height: 24px; border: 2px solid #BDC3C7; border-radius: 6px; transition: 0.2s; display: flex; align-items: center; justify-content: center; background: white; }
+        .checkmark { width: 24px; height: 24px; border: 2px solid #BDC3C7; border-radius: 6px; transition: 0.2s; display: flex; align-items: center; justify-content: center; background: white; flex-shrink: 0; }
         .real-checkbox { display: none; }
         
         .real-checkbox:checked ~ .checkmark { background-color: var(--gojek-green); border-color: var(--gojek-green); }
         .real-checkbox:checked ~ .checkmark:after { content: "\f00c"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: white; font-size: 12px; }
 
+        /* Panel Metode Pembayaran Lengkap */
+        .payment-section { background: white; margin: 16px; padding: 16px; border-radius: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .payment-title { font-size: 13px; font-weight: 700; color: var(--gojek-gray); margin-bottom: 10px; text-transform: uppercase; }
+        .payment-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .pay-method { border: 1.5px solid #E4E8EE; padding: 10px; border-radius: 10px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .pay-method input { cursor: pointer; }
+        .pay-method:hover { border-color: var(--gojek-green); background: #F9FBF9; }
+
         .floating-cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 16px; box-shadow: 0 -4px 16px rgba(0,0,0,0.08); border-radius: 20px 20px 0 0; display: flex; flex-direction: column; gap: 10px; z-index: 999; }
         .info-fee { display: flex; justify-content: space-between; font-size: 12px; color: var(--gojek-gray); padding: 0 4px; }
         .gojek-btn { background: var(--gojek-green); color: white; font-size: 15px; font-weight: 700; border: none; padding: 14px; border-radius: 50px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; width: 100%; transition: 0.2s; box-shadow: 0 4px 12px rgba(0, 170, 19, 0.3); }
-        .gojek-btn:hover { background: #009410; }
         
         .header-action-btn { background: #E8F5E9; color: var(--gojek-green); padding: 8px 14px; border-radius: 20px; text-decoration: none; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
         
@@ -88,55 +98,108 @@
         <p>Beli dari beberapa pedagang pasar sekaligus, ongkir flat cuma Rp 5.000 lewat koordinasi kurir Hub.</p>
     </div>
 
+    <!-- Kategori Interaktif Bergaya Gojek dengan Aksi Klik JavaScript -->
     <div class="categories-grid">
-        <div class="category-item">
+        <div class="category-item active" onclick="filterKategori('semua', this)">
+            <div class="category-icon" style="background: #7f8c8d;"><i class="fa-solid fa-border-all"></i></div>
+            <span>Semua</span>
+        </div>
+        <div class="category-item" onclick="filterKategori('Daging', this)">
             <div class="category-icon cat-green"><i class="fa-solid fa-drumstick-bite"></i></div>
             <span>Daging</span>
         </div>
-        <div class="category-item">
+        <div class="category-item" onclick="filterKategori('Sayur', this)">
             <div class="category-icon cat-orange"><i class="fa-solid fa-carrot"></i></div>
             <span>Sayuran</span>
         </div>
-        <div class="category-item">
+        <div class="category-item" onclick="filterKategori('Bumbu', this)">
             <div class="category-icon cat-blue"><i class="fa-solid fa-mortar-pestle"></i></div>
             <span>Bumbu</span>
         </div>
-        <div class="category-item">
-            <div class="category-icon cat-purple"><i class="fa-solid fa-fish"></i></div>
-            <span>Seafood</span>
+    </div>
+
+    <div class="section-title" id="kategori-title">Semua Rekomendasi Produk</div>
+
+    <form action="/checkout" method="POST">
+        <!-- Daftar Katalog Item Pasar -->
+        <div class="merchant-container">
+            <% produk.forEach(item => { %>
+                <!-- Menyimpan info kategori lapak di dalam atribut data-category -->
+                <div class="product-wrapper" data-category="<%= item.pedagang %>">
+                    <label class="product-card-label" for="p-<%= item.id %>">
+                        <!-- Menggunakan Ikon Ilustrasi Cadangan Premium Jika Gambar Eksternal Lemah -->
+                        <div style="width: 65px; height: 65px; border-radius: 12px; background: #EAF9EB; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0; color: var(--gojek-green); font-size: 24px;">
+                            <% if(item.pedagang.includes('Daging')) { %> <i class="fa-solid fa-drumstick-bite"></i>
+                            <% } else if(item.pedagang.includes('Sayur')) { %> <i class="fa-solid fa-carrot"></i>
+                            <% } else { %> <i class="fa-solid fa-pepper-hot"></i> <% } %>
+                        </div>
+                        <div class="product-info">
+                            <div class="merchant-tag">
+                                <i class="fa-solid fa-store"></i> <%= item.pedagang %>
+                            </div>
+                            <div class="product-name"><%= item.nama %></div>
+                            <div class="product-price">Rp <%= item.harga.toLocaleString('id-ID') %></div>
+                        </div>
+                        <input type="checkbox" name="itemDipilih" value="<%= item.id %>" id="p-<%= item.id %>" class="real-checkbox">
+<span class="checkmark"></span>
+                </label>
+            </div>
+        <% }) %>
+    </div>
+
+    <!-- Pilihan Metode Pembayaran Lengkap -->
+    <div class="payment-section">
+        <div class="payment-title"><i class="fa-solid fa-credit-card"></i> Pilihan Metode Pembayaran</div>
+        <div class="payment-options">
+            <label class="pay-method">
+                <input type="radio" name="metodeBayar" value="Gopay" checked>
+                <i class="fa-solid fa-wallet" style="color: #00AED6;"></i> GoPay
+            </label>
+            <label class="pay-method">
+                <input type="radio" name="metodeBayar" value="QRIS">
+                <i class="fa-solid fa-qrcode" style="color: #E67E22;"></i> QRIS
+            </label>
+            <label class="pay-method">
+                <input type="radio" name="metodeBayar" value="VA">
+                <i class="fa-solid fa-university" style="color: #3498DB;"></i> Transfer VA
+            </label>
+            <label class="pay-method">
+                <input type="radio" name="metodeBayar" value="COD">
+                <i class="fa-solid fa-money-bill-wave" style="color: #2ECC71;"></i> Bayar di Hub (COD)
+            </label>
         </div>
     </div>
 
-    <div class="section-title">Rekomendasi Lapak Terdekat</div>
-
-    <form action="/checkout" method="POST">
-        <div class="merchant-container">
-            <% produk.forEach(item => { %>
-                <label class="product-card-label" for="p-<%= item.id %>">
-                    <img src="<%= item.gambar %>" alt="<%= item.nama %>" style="width: 75px; height: 75px; border-radius: 12px; object-fit: cover; margin-right: 12px; background: #eef2f5;">
-                    <div class="product-info" style="flex-grow: 1;">
-                        <div class="merchant-tag">
-                            <i class="fa-solid fa-store"></i> <%= item.pedagang %>
-                        </div>
-                        <div class="product-name"><%= item.nama %></div>
-                        <div class="product-price">Rp <%= item.harga.toLocaleString('id-ID') %></div>
-                    </div>
-                    <input type="checkbox" name="itemDipilih" value="<%= item.id %>" id="p-<%= item.id %>" class="real-checkbox">
-                    <span class="checkmark"></span>
-                </label>
-            <% }) %>
+    <!-- Floating Bar di Bawah -->
+    <div class="floating-cart-bar">
+        <div class="info-fee">
+            <span><i class="fa-solid fa-motorcycle"></i> Ongkir Hiperlokal Multi-lapak</span>
+            <strong>Rp 5.000</strong>
         </div>
+        <button type="submit" class="gojek-btn">
+            <i class="fa-solid fa-shield-halved"></i> Konfirmasi Pemesanan Aman
+        </button>
+    </div>
+</form>
 
-        <div class="floating-cart-bar">
-            <div class="info-fee">
-                <span><i class="fa-solid fa-motorcycle"></i> Ongkir Hiperlokal Multi-lapak</span>
-                <strong>Rp 5.000</strong>
-            </div>
-            <button type="submit" class="gojek-btn">
-                <i class="fa-solid fa-wallet"></i> Pesan & Bayar Sekali (QRIS)
-            </button>
-        </div>
-    </form>
+<!-- Skrip Filter Kategori Aktif Otomatis -->
+<script>
+    function filterKategori(kategori, elemen) {
+        document.querySelectorAll('.category-item').forEach(item => item.classList.remove('active'));
+        elemen.classList.add('active');
+        
+        const titleElement = document.getElementById('kategori-title');
+        titleElement.innerText = kategori === 'semua' ? 'Semua Rekomendasi Produk' : 'Kategori Pilihan: ' + kategori;
 
+        document.querySelectorAll('.product-wrapper').forEach(wrapper => {
+            const merchantName = wrapper.getAttribute('data-category');
+            if (kategori === 'semua' || merchantName.includes(kategori)) {
+                wrapper.style.display = 'block';
+            } else {
+                wrapper.style.display = 'none';
+            }
+        });
+    }
+</script>
 </body>
 </html>
