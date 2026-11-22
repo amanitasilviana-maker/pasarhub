@@ -10,7 +10,6 @@ import {
   Star, 
   ShieldCheck, 
   ChevronRight,
-  TrendingUp,
   Tag
 } from 'lucide-react';
 import { CATEGORIES } from '../../data/mockData';
@@ -20,22 +19,34 @@ export default function Catalog({
   cart, 
   onAddToCart, 
   onRemoveFromCart, 
-  onOpenCart,
-  onOpenTour
+  onOpenCart 
 }) {
   const [selectedCategory, setSelectedCategory] = useState('semua');
+  const [selectedStall, setSelectedStall] = useState('semua');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Filter products based on search & category
+  // Ambil daftar semua lapak secara otomatis dari data produk (7 Lapak)
+  const stallList = useMemo(() => {
+    const uniqueStalls = [...new Set(products.map((p) => p.pedagang).filter(Boolean))];
+    return uniqueStalls;
+  }, [products]);
+
+  // Filter produk berdasarkan kategori, lapak, dan pencarian (aman dari undefined)
   const filteredProducts = useMemo(() => {
-    return products.filter(product => {
-      const matchCategory = selectedCategory === 'semua' || product.kategori.toLowerCase() === selectedCategory.toLowerCase();
-      const matchSearch = product.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          product.pedagang.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          product.deskripsi.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchCategory && matchSearch;
+    return products.filter((product) => {
+      const kategori = (product.kategori || '').toLowerCase();
+      const nama = (product.nama || '').toLowerCase();
+      const pedagang = (product.pedagang || '').toLowerCase();
+      const deskripsi = (product.deskripsi || '').toLowerCase();
+      const query = searchQuery.toLowerCase();
+
+      const matchCategory = selectedCategory === 'semua' || kategori === selectedCategory.toLowerCase();
+      const matchStall = selectedStall === 'semua' || product.pedagang === selectedStall;
+      const matchSearch = nama.includes(query) || pedagang.includes(query) || deskripsi.includes(query);
+
+      return matchCategory && matchStall && matchSearch;
     });
-  }, [products, selectedCategory, searchQuery]);
+  }, [products, selectedCategory, selectedStall, searchQuery]);
 
   return (
     <div className="catalog-container">
@@ -102,7 +113,7 @@ export default function Catalog({
 
       {/* Categories Navigation */}
       <div className="category-strip" role="tablist">
-        {CATEGORIES.map(cat => (
+        {CATEGORIES.map((cat) => (
           <button
             key={cat.id}
             className={`category-chip ${selectedCategory === cat.id ? 'active' : ''}`}
@@ -113,6 +124,24 @@ export default function Catalog({
         ))}
       </div>
 
+      {/* Pilihan 7 Lapak Pedagang */}
+      <div className="category-strip" style={{ marginTop: '8px' }}>
+        <button
+          className={`category-chip ${selectedStall === 'semua' ? 'active' : ''}`}
+          onClick={() => setSelectedStall('semua')}
+        >
+          <span>🏪 Semua Lapak ({stallList.length})</span>
+        </button>
+        {stallList.map((stallName) => (
+          <button
+            key={stallName}
+            className={`category-chip ${selectedStall === stallName ? 'active' : ''}`}
+            onClick={() => setSelectedStall(stallName)}
+          >
+            <span>{stallName}</span>
+          </button>
+        ))}
+      </div>
       {/* Section Header */}
       <div className="section-header">
         <h2>
@@ -143,8 +172,8 @@ export default function Catalog({
 
       {/* Product Cards Grid */}
       <div className="product-grid">
-        {filteredProducts.map(product => {
-          const cartItem = cart.find(item => item.id === product.id);
+        {filteredProducts.map((product) => {
+          const cartItem = cart.find((item) => item.id === product.id);
           const currentQty = cartItem ? cartItem.qty : 0;
 
           return (
@@ -154,7 +183,7 @@ export default function Catalog({
                   className="product-icon-wrap" 
                   style={{ backgroundColor: product.warnaBg || '#F3F4F6' }}
                 >
-                  <span>{product.icon}</span>
+                  <span>{product.icon || '🥬'}</span>
                 </div>
                 
                 <div className="product-details">
@@ -164,16 +193,18 @@ export default function Catalog({
                   </div>
 
                   <h3 className="product-title">{product.nama}</h3>
-                  <p className="product-desc">{product.deskripsi}</p>
+                  <p className="product-desc">
+                    {product.deskripsi || `Produk segar pilihan langsung dari ${product.pedagang}.`}
+                  </p>
                   
                   <div className="product-meta">
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', color: '#D97706', fontWeight: 600 }}>
-                      <Star size={11} fill="#D97706" /> {product.rating}
+                      <Star size={11} fill="#D97706" /> {product.rating || '4.9'}
                     </span>
                     <span>•</span>
-                    <span>{product.satuan}</span>
+                    <span>{product.satuan || '1 pack'}</span>
                     <span>•</span>
-                    <span style={{ color: '#16A34A', fontWeight: 600 }}>{product.badge}</span>
+                    <span style={{ color: '#16A34A', fontWeight: 600 }}>{product.badge || 'Segar Harian'}</span>
                   </div>
                 </div>
               </div>
@@ -181,7 +212,7 @@ export default function Catalog({
               <div className="product-card-bottom">
                 <div className="price-box">
                   <span className="price-label">Harga Bersih</span>
-                  <span className="price-value">Rp {product.harga.toLocaleString('id-ID')}</span>
+                  <span className="price-value">Rp {Number(product.harga).toLocaleString('id-ID')}</span>
                 </div>
 
                 {currentQty === 0 ? (
@@ -220,12 +251,12 @@ export default function Catalog({
       {filteredProducts.length === 0 && (
         <div style={{ textAlign: 'center', padding: '50px 20px', background: 'white', borderRadius: '16px', marginTop: '20px' }}>
           <p style={{ fontSize: '15px', color: '#6B7280' }}>
-            Tidak ada produk yang cocok dengan pencarian "<strong>{searchQuery}</strong>".
+            Tidak ada produk yang cocok dengan filter ini.
           </p>
           <button 
             className="add-btn" 
             style={{ margin: '14px auto 0 auto' }}
-            onClick={() => { setSearchQuery(''); setSelectedCategory('semua'); }}
+            onClick={() => { setSearchQuery(''); setSelectedCategory('semua'); setSelectedStall('semua'); }}
           >
             Reset Filter
           </button>
