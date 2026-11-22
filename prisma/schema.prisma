@@ -1,0 +1,182 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  MERCHANT
+  COURIER
+  ADMIN_HUB
+}
+
+enum FulfillmentType {
+  DELIVERY
+  PICKUP
+}
+
+enum EscrowStatus {
+  UNPAID
+  HELD
+  RELEASED
+  REFUNDED
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PROCESSING_STALLS
+  CONSOLIDATING_HUB
+  OUT_FOR_DELIVERY
+  COMPLETED
+  CANCELLED
+}
+
+enum StallStatus {
+  PREPARING
+  READY_AT_HUB
+}
+
+enum PaymentStatus {
+  PENDING
+  SETTLED
+  EXPIRED
+  FAILED
+}
+
+enum LedgerType {
+  CREDIT_SALE
+  CREDIT_DELIVERY
+  WITHDRAWAL
+  REFUND
+}
+
+model Market {
+  id                String          @id @default(uuid())
+  name              String
+  address           String
+  hub_lat           Float
+  hub_lng           Float
+  flat_delivery_fee Decimal         @db.Decimal(10, 2)
+  platform_fee      Decimal         @db.Decimal(10, 2)
+  users             User[]
+  stalls            MerchantStall[]
+  orders            MasterOrder[]
+  created_at        DateTime        @default(now())
+}
+
+model User {
+  id             String          @id @default(uuid())
+  market_id      String
+  market         Market          @relation(fields: [market_id], references: [id])
+  name           String
+  phone          String          @unique
+  email          String?         @unique
+  password_hash  String
+  role           Role            @default(CUSTOMER)
+  wallet_balance Decimal         @default(0) @db.Decimal(12, 2)
+  stalls         MerchantStall[]
+  customerOrders MasterOrder[]   @relation("CustomerOrders")
+  courierOrders  MasterOrder[]   @relation("CourierOrders")
+  ledgers        WalletLedger[]
+  created_at     DateTime        @default(now())
+}
+
+model MerchantStall {
+  id           String     @id @default(uuid())
+  user_id      String
+  user         User       @relation(fields: [user_id], references: [id])
+  market_id    String
+  market       Market     @relation(fields: [market_id], references: [id])
+  stall_name   String
+  block_number String
+  is_open      Boolean    @default(true)
+  products     Product[]
+  sub_orders   SubOrder[]
+}
+
+model Product {
+  id          String        @id @default(uuid())
+  stall_id    String
+  stall       MerchantStall @relation(fields: [stall_id], references: [id])
+  category    String
+  name        String
+  price       Decimal       @db.Decimal(10, 2)
+  unit        String
+  stock       Int
+  image_url   String?
+  order_items OrderItem[]
+}
+
+model MasterOrder {
+  id                   String               @id @default(uuid())
+  customer_id          String
+  customer             User                 @relation("CustomerOrders", fields: [customer_id], references: [id])
+  market_id            String
+  market               Market               @relation(fields: [market_id], references: [id])
+  courier_id           String?
+  courier              User?                @relation("CourierOrders", fields: [courier_id], references: [id])
+  fulfillment_type     FulfillmentType
+  delivery_address     String?
+  delivery_lat         Float?
+  delivery_lng         Float?
+  total_product_amount Decimal              @db.Decimal(12, 2)
+  delivery_fee         Decimal              @db.Decimal(10, 2)
+  platform_fee         Decimal              @db.Decimal(10, 2)
+  grand_total          Decimal              @db.Decimal(12, 2)
+  escrow_status        EscrowStatus         @default(UNPAID)
+  order_status         OrderStatus          @default(PENDING_PAYMENT)
+  sub_orders           SubOrder[]
+  payments             PaymentTransaction[]
+  ledgers              WalletLedger[]
+  created_at           DateTime             @default(now())
+}
+
+model SubOrder {
+  id              String        @id @default(uuid())
+  master_order_id String
+  master_order    MasterOrder   @relation(fields: [master_order_id], references: [id])
+  stall_id        String
+  stall           MerchantStall @relation(fields: [stall_id], references: [id])
+  subtotal        Decimal       @db.Decimal(12, 2)
+  stall_status    StallStatus   @default(PREPARING)
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id             String   @id @default(uuid())
+  sub_order_id   String
+  sub_order      SubOrder @relation(fields: [sub_order_id], references: [id])
+  product_id     String
+  product        Product  @relation(fields: [product_id], references: [id])
+  quantity       Int
+  price_snapshot Decimal  @db.Decimal(10, 2)
+  notes          String?
+}
+
+model PaymentTransaction {
+  id                   String        @id @default(uuid())
+  master_order_id      String
+  master_order         MasterOrder   @relation(fields: [master_order_id], references: [id])
+  gateway_reference_id String        @unique
+  payment_method       String
+  amount               Decimal       @db.Decimal(12, 2)
+  status               PaymentStatus @default(PENDING)
+  raw_webhook_payload  Json?
+  paid_at              DateTime?
+}
+
+model WalletLedger {
+  id              String       @id @default(uuid())
+  user_id         String
+  user            User         @relation(fields: [user_id], references: [id])
+  master_order_id String?
+  master_order    MasterOrder? @relation(fields: [master_order_id], references: [id])
+  type            LedgerType
+  amount          Decimal      @db.Decimal(12, 2)
+  balance_after   Decimal      @db.Decimal(12, 2)
+  created_at      DateTime     @default(now())
+}
