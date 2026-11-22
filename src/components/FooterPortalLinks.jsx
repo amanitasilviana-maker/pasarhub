@@ -67,7 +67,7 @@ export default function FooterPortalLinks() {
                   color: location.pathname === l.path ? 'white' : '#D1D5DB',
                   border: '1px solid #374151',
                   padding: '6px 12px',
-                  borderRadius: '6px',
+                  borderRadius: '2px',
                   fontSize: '11px',
                   fontWeight: 700,
                   textDecoration: 'none',

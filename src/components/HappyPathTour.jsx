@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
-import { 
-  X, 
-  CheckCircle2, 
-  ArrowRight, 
-  Sparkles, 
-  Store, 
-  QrCode, 
-  Bell, 
-  PackageCheck, 
-  Truck, 
-  ShieldCheck, 
+import {
+  X,
+  CheckCircle2,
+  ArrowRight,
+  Sparkles,
+  Store,
+  QrCode,
+  Bell,
+  PackageCheck,
+  Truck,
+  ShieldCheck,
   Wallet,
   Play
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
-export default function HappyPathTour({ 
-  isOpen, 
-  onClose, 
+export default function HappyPathTour({
+  isOpen,
+  onClose,
   onNavigateRole,
   onAutoSimulateStep
 }) {
@@ -141,8 +141,8 @@ export default function HappyPathTour({
               Simulasi Alur 8 Langkah PRD PasarHub
             </h3>
           </div>
-          <button 
-            className="modal-close-btn" 
+          <button
+            className="modal-close-btn"
             style={{ background: '#374151', color: 'white' }}
             onClick={onClose}
           >
@@ -159,7 +159,7 @@ export default function HappyPathTour({
               style={{
                 flex: 1,
                 height: '6px',
-                borderRadius: '4px',
+                borderRadius: '2px',
                 background: i <= currentStepIndex ? '#00AA13' : '#374151',
                 cursor: 'pointer',
                 transition: 'all 0.2s'
@@ -169,18 +169,18 @@ export default function HappyPathTour({
         </div>
 
         {/* Current Step Card */}
-        <div style={{ background: '#111827', borderRadius: '16px', padding: '20px', border: '1px solid #374151', marginBottom: '20px' }}>
+        <div style={{ background: '#111827', borderRadius: '2px', padding: '20px', border: '1px solid #374151', marginBottom: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
             <span className="tour-step-pill">
               Langkah {currentStep.step} dari 8
             </span>
-            <span style={{ fontSize: '11px', color: '#9CA3AF', background: '#1F2937', padding: '3px 8px', borderRadius: '6px' }}>
+            <span style={{ fontSize: '11px', color: '#9CA3AF', background: '#1F2937', padding: '3px 8px', borderRadius: '2px' }}>
               {currentStep.badge}
             </span>
           </div>
 
           <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-            <div style={{ width: '46px', height: '46px', borderRadius: '12px', background: '#00AA13', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <div style={{ width: '46px', height: '46px', borderRadius: '2px', background: '#00AA13', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <StepIcon size={24} />
             </div>
             <div>
@@ -198,13 +198,13 @@ export default function HappyPathTour({
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
           <button
             onClick={handleJumpToRole}
-            style={{ 
-              background: '#374151', 
-              color: 'white', 
-              border: 'none', 
-              padding: '10px 16px', 
-              borderRadius: '50px', 
-              fontSize: '12px', 
+            style={{
+              background: '#374151',
+              color: 'white',
+              border: 'none',
+              padding: '10px 16px',
+              borderRadius: '2px',
+              fontSize: '12px',
               fontWeight: 700,
               cursor: 'pointer',
               display: 'flex',
@@ -219,7 +219,7 @@ export default function HappyPathTour({
             {currentStepIndex > 0 && (
               <button
                 onClick={handlePrev}
-                style={{ background: 'transparent', border: '1px solid #4B5563', color: '#9CA3AF', padding: '10px 18px', borderRadius: '50px', fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}
+                style={{ background: 'transparent', border: '1px solid #4B5563', color: '#9CA3AF', padding: '10px 18px', borderRadius: '2px', fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}
               >
                 Sebelumnya
               </button>
@@ -227,7 +227,7 @@ export default function HappyPathTour({
 
             <button
               onClick={handleNext}
-              style={{ background: '#00AA13', color: 'white', border: 'none', padding: '10px 22px', borderRadius: '50px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+              style={{ background: '#00AA13', color: 'white', border: 'none', padding: '10px 22px', borderRadius: '2px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
             >
               <span>{currentStepIndex === steps.length - 1 ? 'Selesai Panduan' : 'Lanjut'}</span>
               <ArrowRight size={15} />

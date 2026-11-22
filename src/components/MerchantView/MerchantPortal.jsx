@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { 
-  Store, 
-  Wallet, 
-  Bell, 
-  BellRing, 
-  CheckCircle2, 
-  Clock, 
-  ArrowUpRight, 
-  Package, 
+import {
+  Store,
+  Wallet,
+  Bell,
+  BellRing,
+  CheckCircle2,
+  Clock,
+  ArrowUpRight,
+  Package,
   AlertTriangle,
   Send,
   Sparkles,
@@ -18,9 +18,9 @@ import {
 import confetti from 'canvas-confetti';
 import { useNavigate } from 'react-router-dom';
 
-export default function MerchantPortal({ 
-  merchants, 
-  orders, 
+export default function MerchantPortal({
+  merchants,
+  orders,
   onDeliverSubOrderToHub,
   onWithdrawMerchantBalance,
   selectedMerchant: propSelectedMerchant,
@@ -137,7 +137,7 @@ export default function MerchantPortal({
   return (
     <div className="merchant-portal-container">
       {/* Merchant Persona Switcher */}
-      <div style={{ background: 'white', padding: '12px 16px', borderRadius: '16px', marginBottom: '18px', border: '1px solid #E5E9EF', display: 'flex', alignItems: 'center', gap: '10px', overflowX: 'auto' }}>
+      <div style={{ background: 'white', padding: '12px 16px', borderRadius: '2px', marginBottom: '18px', border: '1px solid #E5E9EF', display: 'flex', alignItems: 'center', gap: '10px', overflowX: 'auto' }}>
         <span style={{ fontSize: '12px', fontWeight: 700, color: '#6B7280', whiteSpace: 'nowrap' }}>
           Pilih Akun Pedagang:
         </span>
@@ -167,9 +167,9 @@ export default function MerchantPortal({
               </div>
             </div>
           </div>
-          <button 
+          <button
             onClick={() => setLoudAlertSimulated(false)}
-            style={{ background: '#F59E0B', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}
+            style={{ background: '#F59E0B', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '2px', fontWeight: 700, cursor: 'pointer' }}
           >
             Matikan Suara
           </button>
@@ -178,7 +178,7 @@ export default function MerchantPortal({
 
       {/* Login Warning Banner if not authenticated */}
       {!currentMerchant && (
-        <div style={{ background: '#FEF2F2', border: '1.5px solid #F87171', borderRadius: '12px', padding: '14px 18px', marginBottom: '18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+        <div style={{ background: '#FEF2F2', border: '1.5px solid #F87171', borderRadius: '2px', padding: '14px 18px', marginBottom: '18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
           <div>
             <div style={{ fontSize: '13px', fontWeight: 800, color: '#991B1B' }}>
               🔒 Mode Pratinjau — Anda Belum Login sebagai Mitra
@@ -187,8 +187,8 @@ export default function MerchantPortal({
               Silakan login untuk menambah dagangan baru, mengonfirmasi serah terima ke Hub, atau mencairkan saldo.
             </div>
           </div>
-          <button 
-            style={{ background: '#DC2626', color: 'white', border: 'none', padding: '8px 18px', borderRadius: '50px', fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}
+          <button
+            style={{ background: '#DC2626', color: 'white', border: 'none', padding: '8px 18px', borderRadius: '2px', fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}
             onClick={() => navigate('/login-umkm')}
           >
             Login Mitra Sekarang
@@ -197,7 +197,7 @@ export default function MerchantPortal({
       )}
 
       {loginAlert && (
-        <div style={{ background: '#FFFBEB', border: '1px solid #FCD34D', color: '#92400E', padding: '10px 14px', borderRadius: '10px', fontSize: '12px', marginBottom: '14px', fontWeight: 600 }}>
+        <div style={{ background: '#FFFBEB', border: '1px solid #FCD34D', color: '#92400E', padding: '10px 14px', borderRadius: '2px', fontSize: '12px', marginBottom: '14px', fontWeight: 600 }}>
           {loginAlert}
         </div>
       )}
@@ -213,7 +213,7 @@ export default function MerchantPortal({
               <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#111827' }}>
                 {currentData.nama}
               </h2>
-              <span style={{ background: '#DCFCE7', color: '#15803D', fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '12px' }}>
+              <span style={{ background: '#DCFCE7', color: '#15803D', fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '2px' }}>
                 Lapak Aktif
               </span>
             </div>
@@ -224,7 +224,7 @@ export default function MerchantPortal({
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <button 
+          <button
             className="role-pill-btn"
             style={{ background: '#00AA13', color: 'white', fontWeight: 700, boxShadow: '0 2px 8px rgba(0, 170, 19, 0.25)' }}
             onClick={handleOpenAddModal}
@@ -234,7 +234,7 @@ export default function MerchantPortal({
             <span>+ Tambah Dagangan Baru</span>
           </button>
 
-          <button 
+          <button
             className="role-pill-btn"
             style={{ background: '#FEF3C7', color: '#B45309', border: '1px solid #FDE68A', fontWeight: 700 }}
             onClick={triggerSoundAlert}
@@ -260,13 +260,13 @@ export default function MerchantPortal({
         </div>
 
         <div>
-          <button 
+          <button
             className="action-btn"
-            style={{ 
-              background: '#00AA13', 
-              color: 'white', 
-              padding: '12px 24px', 
-              borderRadius: '50px',
+            style={{
+              background: '#00AA13',
+              color: 'white',
+              padding: '12px 24px',
+              borderRadius: '2px',
               fontSize: '14px',
               fontWeight: 800,
               boxShadow: '0 4px 14px rgba(0, 170, 19, 0.4)',
@@ -296,7 +296,7 @@ export default function MerchantPortal({
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
         {relevantSubOrders.length === 0 ? (
-          <div style={{ background: 'white', padding: '40px 20px', borderRadius: '16px', textAlign: 'center', border: '1px solid #E5E7EB' }}>
+          <div style={{ background: 'white', padding: '40px 20px', borderRadius: '2px', textAlign: 'center', border: '1px solid #E5E7EB' }}>
             <Store size={40} style={{ color: '#D1D5DB', margin: '0 auto 12px auto' }} />
             <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#374151', marginBottom: '4px' }}>
               Belum Ada Pesanan untuk Lapak Ini
@@ -311,12 +311,12 @@ export default function MerchantPortal({
             const isCompleted = item.tahapStatus === 'selesai';
 
             return (
-              <div 
+              <div
                 key={item.subOrder.idSub}
-                style={{ 
-                  background: 'white', 
-                  borderRadius: '16px', 
-                  padding: '18px', 
+                style={{
+                  background: 'white',
+                  borderRadius: '2px',
+                  padding: '18px',
                   border: '1.5px solid #E5E9EF',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.03)'
                 }}
@@ -324,7 +324,7 @@ export default function MerchantPortal({
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '12px', background: '#F1F5F9', color: '#475569', padding: '3px 8px', borderRadius: '6px', fontWeight: 700, fontFamily: 'monospace' }}>
+                      <span style={{ fontSize: '12px', background: '#F1F5F9', color: '#475569', padding: '3px 8px', borderRadius: '2px', fontWeight: 700, fontFamily: 'monospace' }}>
                         {item.subOrder.idSub}
                       </span>
                       <span style={{ fontSize: '12px', color: '#6B7280' }}>• ID Induk: {item.idInduk}</span>
@@ -335,10 +335,10 @@ export default function MerchantPortal({
                   </div>
 
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ 
-                      fontSize: '11px', 
-                      fontWeight: 800, 
-                      padding: '4px 10px', 
+                    <div style={{
+                      fontSize: '11px',
+                      fontWeight: 800,
+                      padding: '4px 10px',
                       borderRadius: '20px',
                       background: isCompleted ? '#DCFCE7' : isDeliveredToHub ? '#E0F2FE' : '#FEF3C7',
                       color: isCompleted ? '#15803D' : isDeliveredToHub ? '#0369A1' : '#B45309'
@@ -352,7 +352,7 @@ export default function MerchantPortal({
                 </div>
 
                 {/* Items to prepare */}
-                <div style={{ background: '#F8FAFC', borderRadius: '12px', padding: '12px', marginBottom: '14px', border: '1px solid #EEF2F6' }}>
+                <div style={{ background: '#F8FAFC', borderRadius: '2px', padding: '12px', marginBottom: '14px', border: '1px solid #EEF2F6' }}>
                   <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', marginBottom: '6px' }}>
                     Barang yang Perlu Disiapkan Lapak Ini:
                   </div>
@@ -372,12 +372,12 @@ export default function MerchantPortal({
                 {!isDeliveredToHub && !isCompleted && (
                   <button
                     className="action-btn"
-                    style={{ 
-                      background: '#00AA13', 
-                      color: 'white', 
-                      padding: '12px', 
-                      borderRadius: '12px', 
-                      fontSize: '13px', 
+                    style={{
+                      background: '#00AA13',
+                      color: 'white',
+                      padding: '12px',
+                      borderRadius: '2px',
+                      fontSize: '13px',
                       fontWeight: 700,
                       cursor: 'pointer',
                       display: 'flex',
@@ -393,7 +393,7 @@ export default function MerchantPortal({
                 )}
 
                 {isDeliveredToHub && !isCompleted && (
-                  <div style={{ background: '#F0FDF4', padding: '10px 14px', borderRadius: '10px', fontSize: '12px', color: '#166534', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div style={{ background: '#F0FDF4', padding: '10px 14px', borderRadius: '2px', fontSize: '12px', color: '#166534', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <CheckCircle2 size={16} />
                     <span>Barang sudah diantar ke Meja Konsolidasi Hub. Menunggu kurir mengantar ke pembeli.</span>
                   </div>
@@ -419,15 +419,15 @@ export default function MerchantPortal({
             </div>
 
             <form onSubmit={handleSaveNewProduct} className="modal-body">
-              <div style={{ background: '#F0FDF4', padding: '10px 14px', borderRadius: '10px', fontSize: '12px', color: '#166534', fontWeight: 600 }}>
+              <div style={{ background: '#F0FDF4', padding: '10px 14px', borderRadius: '2px', fontSize: '12px', color: '#166534', fontWeight: 600 }}>
                 📍 Produk akan didaftarkan atas nama: <strong>{selectedMerchant}</strong>
               </div>
 
               <div className="login-field">
                 <label>Nama Produk Dagangan *</label>
-                <input 
-                  type="text" 
-                  className="login-input" 
+                <input
+                  type="text"
+                  className="login-input"
                   placeholder="Misal: Ikan Gurame Segar (1kg)"
                   value={newProductName}
                   onChange={(e) => setNewProductName(e.target.value)}
@@ -438,8 +438,8 @@ export default function MerchantPortal({
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div className="login-field">
                   <label>Kategori Pasar *</label>
-                  <select 
-                    className="login-input" 
+                  <select
+                    className="login-input"
                     value={newProductCategory}
                     onChange={(e) => setNewProductCategory(e.target.value)}
                     style={{ paddingLeft: '12px' }}
@@ -455,9 +455,9 @@ export default function MerchantPortal({
 
                 <div className="login-field">
                   <label>Harga Jual (Rp) *</label>
-                  <input 
-                    type="number" 
-                    className="login-input" 
+                  <input
+                    type="number"
+                    className="login-input"
                     placeholder="25000"
                     value={newProductPrice}
                     onChange={(e) => setNewProductPrice(e.target.value)}
@@ -470,9 +470,9 @@ export default function MerchantPortal({
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div className="login-field">
                   <label>Satuan Produk</label>
-                  <input 
-                    type="text" 
-                    className="login-input" 
+                  <input
+                    type="text"
+                    className="login-input"
                     placeholder="1 kg / 1 ikat / 500g"
                     value={newProductUnit}
                     onChange={(e) => setNewProductUnit(e.target.value)}
@@ -482,9 +482,9 @@ export default function MerchantPortal({
 
                 <div className="login-field">
                   <label>Label / Badge</label>
-                  <input 
-                    type="text" 
-                    className="login-input" 
+                  <input
+                    type="text"
+                    className="login-input"
                     placeholder="Segar Pagi / Organik / Halal"
                     value={newProductBadge}
                     onChange={(e) => setNewProductBadge(e.target.value)}
@@ -495,8 +495,8 @@ export default function MerchantPortal({
 
               <div className="login-field">
                 <label>Deskripsi Singkat</label>
-                <textarea 
-                  className="login-input" 
+                <textarea
+                  className="login-input"
                   rows="2"
                   placeholder="Keterangan kondisi produk, asal petani, atau kualitas barang..."
                   value={newProductDesc}
@@ -506,15 +506,15 @@ export default function MerchantPortal({
               </div>
 
               <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                <button 
-                  type="button" 
-                  style={{ flex: 1, padding: '12px', borderRadius: '50px', border: '1px solid #CBD5E1', background: 'transparent', fontWeight: 700, cursor: 'pointer' }}
+                <button
+                  type="button"
+                  style={{ flex: 1, padding: '12px', borderRadius: '2px', border: '1px solid #CBD5E1', background: 'transparent', fontWeight: 700, cursor: 'pointer' }}
                   onClick={() => setIsAddModalOpen(false)}
                 >
                   Batal
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="cart-action-btn"
                   style={{ flex: 2, justifyContent: 'center' }}
                 >

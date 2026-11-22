@@ -12,6 +12,7 @@ import {
   ExternalLink,
   ShieldCheck
 } from 'lucide-react';
+import RouteMap from './RouteMap';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -49,7 +50,7 @@ export default function CourierPortal({
     <div className="courier-portal-container">
       {/* Login Warning Banner if not authenticated */}
       {!currentDriver && (
-        <div style={{ background: '#FEF2F2', border: '1.5px solid #F87171', borderRadius: '12px', padding: '14px 18px', marginBottom: '18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+        <div style={{ background: '#FEF2F2', border: '1.5px solid #F87171', borderRadius: '2px', padding: '14px 18px', marginBottom: '18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
           <div>
             <div style={{ fontSize: '13px', fontWeight: 800, color: '#991B1B' }}>
               🔒 Mode Pratinjau — Anda Belum Login sebagai Driver
@@ -59,7 +60,7 @@ export default function CourierPortal({
             </div>
           </div>
           <button 
-            style={{ background: '#0284C7', color: 'white', border: 'none', padding: '8px 18px', borderRadius: '50px', fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}
+            style={{ background: '#0284C7', color: 'white', border: 'none', padding: '8px 18px', borderRadius: '2px', fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}
             onClick={() => navigate('/login-driver')}
           >
             Login Driver Sekarang
@@ -68,12 +69,12 @@ export default function CourierPortal({
       )}
 
       {loginAlert && (
-        <div style={{ background: '#FFFBEB', border: '1px solid #FCD34D', color: '#92400E', padding: '10px 14px', borderRadius: '10px', fontSize: '12px', marginBottom: '14px', fontWeight: 600 }}>
+        <div style={{ background: '#FFFBEB', border: '1px solid #FCD34D', color: '#92400E', padding: '10px 14px', borderRadius: '2px', fontSize: '12px', marginBottom: '14px', fontWeight: 600 }}>
           {loginAlert}
         </div>
       )}
       {/* Courier Selector Tabs */}
-      <div style={{ background: 'white', padding: '12px 16px', borderRadius: '16px', marginBottom: '18px', border: '1px solid #E5E9EF', display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <div style={{ background: 'white', padding: '12px 16px', borderRadius: '2px', marginBottom: '18px', border: '1px solid #E5E9EF', display: 'flex', alignItems: 'center', gap: '10px' }}>
         <span style={{ fontSize: '12px', fontWeight: 700, color: '#6B7280', whiteSpace: 'nowrap' }}>
           Pilih Profil Kurir:
         </span>
@@ -100,7 +101,7 @@ export default function CourierPortal({
               <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#111827' }}>
                 {activeCourier.nama}
               </h2>
-              <span style={{ background: '#DCFCE7', color: '#15803D', fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '12px' }}>
+              <span style={{ background: '#DCFCE7', color: '#15803D', fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '2px' }}>
                 {activeCourier.status}
               </span>
             </div>
@@ -111,7 +112,7 @@ export default function CourierPortal({
         </div>
 
         {/* Clear Hub Pickup Point (PRD Requirement) */}
-        <div style={{ background: '#F0FDF4', border: '1.5px solid #86EFAC', borderRadius: '12px', padding: '10px 14px', maxWidth: '340px' }}>
+        <div style={{ background: '#F0FDF4', border: '1.5px solid #86EFAC', borderRadius: '2px', padding: '10px 14px', maxWidth: '340px' }}>
           <div style={{ fontSize: '11px', fontWeight: 700, color: '#166534', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <MapPin size={14} /> Titik Kumpul Tunggal (Hub Logistik):
           </div>
@@ -124,20 +125,8 @@ export default function CourierPortal({
         </div>
       </div>
 
-      {/* Local Routing Map Simulation */}
-      <div className="courier-map-sim">
-        <div className="map-grid-overlay" />
-        <div className="hub-pin">
-          <MapPin size={14} /> Hub Pasar (Titik Ambil)
-        </div>
-        <div className="route-line" />
-        <div className="dest-pin">
-          <Navigation size={14} /> Lokasi Konsumen (Tujuan)
-        </div>
-        <div style={{ position: 'absolute', bottom: '12px', left: '16px', background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(4px)', padding: '6px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: 700, color: '#1F2937', boxShadow: '0 2px 6px rgba(0,0,0,0.1)' }}>
-          📍 Radius Hiperlokal: 1.8 KM • Estimasi Rute: 12 Menit
-        </div>
-      </div>
+      {/* Local Routing Map — Pasar Besar Malang → Perpustakaan UM */}
+      <RouteMap />
 
       {/* Assigned Deliveries */}
       <div className="section-header">
@@ -152,7 +141,7 @@ export default function CourierPortal({
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {assignedOrders.length === 0 ? (
-          <div style={{ background: 'white', padding: '40px 20px', borderRadius: '16px', textAlign: 'center', border: '1px solid #E5E7EB' }}>
+          <div style={{ background: 'white', padding: '40px 20px', borderRadius: '2px', textAlign: 'center', border: '1px solid #E5E7EB' }}>
             <Truck size={40} style={{ color: '#D1D5DB', margin: '0 auto 12px auto' }} />
             <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#374151', marginBottom: '4px' }}>
               Belum Ada Paket untuk Diantar
@@ -171,7 +160,7 @@ export default function CourierPortal({
                 key={order.idInduk}
                 style={{ 
                   background: 'white', 
-                  borderRadius: '16px', 
+                  borderRadius: '2px', 
                   padding: '20px', 
                   border: '1.5px solid #E5E9EF',
                   boxShadow: '0 4px 12px rgba(0,0,0,0.04)'
@@ -208,7 +197,7 @@ export default function CourierPortal({
                 </div>
 
                 {/* Package Consolidation Details */}
-                <div style={{ background: '#F8FAFC', borderRadius: '12px', padding: '12px', marginBottom: '14px', border: '1px solid #EEF2F6' }}>
+                <div style={{ background: '#F8FAFC', borderRadius: '2px', padding: '12px', marginBottom: '14px', border: '1px solid #EEF2F6' }}>
                   <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', marginBottom: '6px' }}>
                     Isi Paket Konsolidasi ({order.subOrders.length} Lapak Digabung Jadi 1):
                   </div>
@@ -230,7 +219,7 @@ export default function CourierPortal({
                       color: '#00AA13', 
                       border: '1px solid #A7F3D0',
                       padding: '10px 16px', 
-                      borderRadius: '10px', 
+                      borderRadius: '2px', 
                       fontSize: '12px', 
                       fontWeight: 700, 
                       textDecoration: 'none',

@@ -195,7 +195,7 @@ export default function CheckoutModal({
           )}
 
           {/* Sub-order Splitting Overview */}
-          <div style={{ background: '#F8FAFC', borderRadius: '12px', padding: '12px', border: '1px solid #E2E8F0' }}>
+          <div style={{ background: '#F8FAFC', borderRadius: '2px', padding: '12px', border: '1px solid #E2E8F0' }}>
             <div style={{ fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
               Rincian Pemecahan Otomatis (Order Splitting):
             </div>

@@ -142,7 +142,7 @@ export default function LoginPage({ persona, onLoginSuccess }) {
         </div>
 
         {errorMsg && (
-          <div style={{ background: '#FEE2E2', border: '1px solid #FCA5A5', color: '#991B1B', padding: '10px 14px', borderRadius: '10px', fontSize: '12px', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ background: '#FEE2E2', border: '1px solid #FCA5A5', color: '#991B1B', padding: '10px 14px', borderRadius: '2px', fontSize: '12px', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <AlertCircle size={16} />
             <span>{errorMsg}</span>
           </div>

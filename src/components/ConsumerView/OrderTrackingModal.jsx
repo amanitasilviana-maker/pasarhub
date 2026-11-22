@@ -102,7 +102,7 @@ export default function OrderTrackingModal({
           {/* SLA & Escrow Status Bar */}
           <div style={{ 
             background: isCompleted ? '#DCFCE7' : '#FEF9C3', 
-            borderRadius: '12px', 
+            borderRadius: '2px', 
             padding: '14px', 
             border: `1.5px solid ${isCompleted ? '#86EFAC' : '#FDE047'}`,
             display: 'flex',
@@ -125,7 +125,7 @@ export default function OrderTrackingModal({
           </div>
 
           {/* Delivery Address & Courier info */}
-          <div style={{ background: '#F8FAFC', borderRadius: '12px', padding: '12px', border: '1px solid #E2E8F0' }}>
+          <div style={{ background: '#F8FAFC', borderRadius: '2px', padding: '12px', border: '1px solid #E2E8F0' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
               <MapPin size={18} style={{ color: '#DC2626', marginTop: '2px', flexShrink: 0 }} />
               <div style={{ flex: 1 }}>
@@ -177,7 +177,7 @@ export default function OrderTrackingModal({
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {order.subOrders.map(sub => (
-                <div key={sub.idSub} style={{ background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '10px', padding: '10px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div key={sub.idSub} style={{ background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '2px', padding: '10px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div>
                     <div style={{ fontSize: '13px', fontWeight: 700, color: '#111827' }}>{sub.pedagang}</div>
                     <div style={{ fontSize: '11px', color: '#6B7280' }}>
@@ -189,7 +189,7 @@ export default function OrderTrackingModal({
                       fontSize: '11px', 
                       fontWeight: 700, 
                       padding: '3px 8px', 
-                      borderRadius: '6px',
+                      borderRadius: '2px',
                       background: sub.statusLapak.includes('Sudah') ? '#DCFCE7' : '#FEF3C7',
                       color: sub.statusLapak.includes('Sudah') ? '#15803D' : '#B45309'
                     }}>
@@ -215,7 +215,7 @@ export default function OrderTrackingModal({
                 color: 'white', 
                 border: 'none', 
                 padding: '14px', 
-                borderRadius: '50px', 
+                borderRadius: '2px', 
                 fontWeight: 800, 
                 fontSize: '14px',
                 cursor: 'pointer',

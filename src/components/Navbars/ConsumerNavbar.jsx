@@ -1,8 +1,8 @@
 import React from 'react';
-import { 
-  Store, 
-  ShoppingBag, 
-  MapPin, 
+import {
+  Store,
+  ShoppingBag,
+  MapPin,
   Compass,
   LogIn,
   LogOut,
@@ -10,10 +10,10 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-export default function ConsumerNavbar({ 
-  cartCount, 
-  onOpenCart, 
-  ordersCount, 
+export default function ConsumerNavbar({
+  cartCount,
+  onOpenCart,
+  ordersCount,
   onOpenTracking,
   currentUser,
   onLogout
@@ -23,9 +23,16 @@ export default function ConsumerNavbar({
       <div className="role-nav">
         {/* Brand */}
         <Link to="/" style={{ textDecoration: 'none' }} className="brand-section">
-          <div className="brand-logo-icon">
-            <Store size={22} />
-          </div>
+          <img
+            src="/logo.png"
+            alt="PasarHub"
+            style={{
+              width: '40px',
+              height: '40px',
+              objectFit: 'cover',
+              borderRadius: '4px'
+            }}
+          />
           <div className="brand-text">
             <h1>PasarHub</h1>
             <span>Belanja Pasar Tradisional</span>
@@ -41,8 +48,8 @@ export default function ConsumerNavbar({
         {/* Actions khusus Konsumen */}
         <div className="header-actions">
           {ordersCount > 0 && (
-            <button 
-              className="role-pill-btn" 
+            <button
+              className="role-pill-btn"
               style={{ background: '#E0F2FE', color: '#0369A1', fontWeight: 700 }}
               onClick={onOpenTracking}
               title="Lacak Pesanan Aktif"
@@ -52,8 +59,8 @@ export default function ConsumerNavbar({
             </button>
           )}
 
-          <button 
-            className="role-pill-btn" 
+          <button
+            className="role-pill-btn"
             style={{ background: '#00AA13', color: 'white', fontWeight: 700, boxShadow: '0 2px 8px rgba(0, 170, 19, 0.25)' }}
             onClick={onOpenCart}
           >
@@ -66,8 +73,8 @@ export default function ConsumerNavbar({
             <div className="auth-nav-pill">
               <span className="auth-nav-avatar">{currentUser.avatar || '👤'}</span>
               <span className="auth-nav-name">{currentUser.nama}</span>
-              <button 
-                className="auth-logout-btn" 
+              <button
+                className="auth-logout-btn"
                 onClick={onLogout}
                 title="Keluar dari akun konsumen"
               >
@@ -77,7 +84,7 @@ export default function ConsumerNavbar({
           ) : (
             <Link to="/login-user" className="login-nav-btn">
               <LogIn size={14} />
-              <span>Masuk Akun</span>
+              <span>Masuk/Daftar</span>
             </Link>
           )}
         </div>

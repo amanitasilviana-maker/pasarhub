@@ -119,11 +119,11 @@ export default function CartDrawer({
               </div>
 
               {/* Order Splitting Preview Notice */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: '#F0FDF4', borderRadius: '8px', border: '1px solid #BBF7D0' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: '#F0FDF4', borderRadius: '2px', border: '1px solid #BBF7D0' }}>
                 <span style={{ fontSize: '12px', color: '#166534', fontWeight: 600 }}>
                   ⚡ Sistem Konsolidasi: {totalMerchants} Lapak Mitra Berbeda
                 </span>
-                <span style={{ fontSize: '11px', background: '#DCFCE7', color: '#15803D', padding: '2px 8px', borderRadius: '12px', fontWeight: 700 }}>
+                <span style={{ fontSize: '11px', background: '#DCFCE7', color: '#15803D', padding: '2px 8px', borderRadius: '2px', fontWeight: 700 }}>
                   1x Biaya Ongkir Flat
                 </span>
               </div>
@@ -191,7 +191,7 @@ export default function CartDrawer({
               </div>
 
               {/* Price Breakdown */}
-              <div style={{ background: '#F8FAFC', borderRadius: '12px', padding: '14px', border: '1px dashed #CBD5E1' }}>
+              <div style={{ background: '#F8FAFC', borderRadius: '2px', padding: '14px', border: '1px dashed #CBD5E1' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '6px' }}>
                   <span style={{ color: '#64748B' }}>Total Barang ({totalItemsCount} item):</span>
                   <span style={{ fontWeight: 600 }}>Rp {totalBarang.toLocaleString('id-ID')}</span>
@@ -221,7 +221,7 @@ export default function CartDrawer({
         {cart.length > 0 && (
           <div className="modal-footer" style={{ flexDirection: 'column', gap: '10px', alignItems: 'stretch' }}>
             {showLoginPrompt && (
-              <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '10px', padding: '10px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '2px', padding: '10px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: '12px', color: '#991B1B', fontWeight: 600 }}>
                   ⚠️ Anda harus login sebagai Konsumen terlebih dahulu untuk membeli.
                 </span>

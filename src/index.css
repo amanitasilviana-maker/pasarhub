@@ -51,10 +51,10 @@
   --shadow-modal: 0 20px 40px rgba(0, 0, 0, 0.25);
 
   /* Radii */
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --radius-pill: 9999px;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --radius-pill: 2px;
 
   /* Fonts */
   --font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -135,7 +135,7 @@ body {
   width: 40px;
   height: 40px;
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-  border-radius: 12px;
+  border-radius: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -203,7 +203,7 @@ body {
   color: white;
   font-size: 10px;
   padding: 1px 6px;
-  border-radius: 10px;
+  border-radius: 2px;
   font-weight: 700;
 }
 
@@ -272,7 +272,7 @@ body {
   width: 200px;
   height: 200px;
   background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
-  border-radius: 50%;
+  border-radius: 0;
 }
 
 .hero-tag {
@@ -345,7 +345,7 @@ body {
 .loc-icon-bubble {
   width: 36px;
   height: 36px;
-  border-radius: 10px;
+  border-radius: 2px;
   background: #FEE2E2;
   color: #DC2626;
   display: flex;
@@ -537,7 +537,7 @@ body {
   background: #E8F5E9;
   color: var(--primary);
   padding: 3px 8px;
-  border-radius: 6px;
+  border-radius: 2px;
   font-size: 11px;
   font-weight: 700;
   margin-bottom: 4px;
@@ -628,7 +628,7 @@ body {
 .qty-btn {
   width: 26px;
   height: 26px;
-  border-radius: 50%;
+  border-radius: 0;
   border: none;
   background: var(--primary);
   color: white;
@@ -688,7 +688,7 @@ body {
 .cart-icon-bubble {
   width: 44px;
   height: 44px;
-  border-radius: 12px;
+  border-radius: 2px;
   background: var(--primary);
   color: white;
   display: flex;
@@ -807,7 +807,7 @@ body {
   border: none;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
+  border-radius: 0;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -901,7 +901,7 @@ body {
   font-size: 10px;
   font-weight: 700;
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
 .cart-item-row {
@@ -945,7 +945,7 @@ body {
   font-weight: 800;
   font-size: 13px;
   padding: 4px 8px;
-  border-radius: 6px;
+  border-radius: 2px;
   background: white;
   border: 1px solid var(--border-light);
 }
@@ -968,7 +968,7 @@ body {
   height: 180px;
   background: #FFFFFF;
   border: 1px solid #E5E7EB;
-  border-radius: 12px;
+  border-radius: 2px;
   padding: 10px;
   display: flex;
   align-items: center;
@@ -984,7 +984,7 @@ body {
   background-size: 12px 12px;
   background-position: 0 0, 6px 6px;
   opacity: 0.85;
-  border-radius: 6px;
+  border-radius: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -993,7 +993,7 @@ body {
 .qris-center-badge {
   background: white;
   padding: 6px 10px;
-  border-radius: 8px;
+  border-radius: 2px;
   font-size: 11px;
   font-weight: 900;
   color: #DC2626;
@@ -1031,7 +1031,7 @@ body {
   top: 2px;
   width: 22px;
   height: 22px;
-  border-radius: 50%;
+  border-radius: 0;
   background: white;
   border: 2px solid var(--border-light);
   display: flex;
@@ -1096,7 +1096,7 @@ body {
 .merchant-avatar {
   width: 56px;
   height: 56px;
-  border-radius: 16px;
+  border-radius: 2px;
   background: var(--primary-subtle);
   display: flex;
   align-items: center;
@@ -1261,7 +1261,7 @@ body {
 .stat-icon {
   width: 40px;
   height: 40px;
-  border-radius: 10px;
+  border-radius: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1398,7 +1398,7 @@ body {
 .portal-link-icon {
   width: 36px;
   height: 36px;
-  border-radius: 8px;
+  border-radius: 2px;
   background: rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
@@ -1459,7 +1459,7 @@ body {
 .login-icon-badge {
   width: 54px;
   height: 54px;
-  border-radius: 16px;
+  border-radius: 2px;
   margin: 0 auto 12px auto;
   display: flex;
   align-items: center;
@@ -1517,7 +1517,7 @@ body {
 .login-input {
   width: 100%;
   padding: 12px 14px 12px 40px;
-  border-radius: 10px;
+  border-radius: 2px;
   border: 1.5px solid var(--border-light);
   font-size: 14px;
   color: var(--text-main);
@@ -1537,7 +1537,7 @@ body {
   color: white;
   border: none;
   padding: 13px;
-  border-radius: 50px;
+  border-radius: 2px;
   font-size: 14px;
   font-weight: 800;
   cursor: pointer;
@@ -1558,7 +1558,7 @@ body {
 .demo-account-card {
   background: #F8FAFC;
   border: 1px dashed #CBD5E1;
-  border-radius: 12px;
+  border-radius: 2px;
   padding: 12px 14px;
   margin-top: 20px;
 }
@@ -1579,7 +1579,7 @@ body {
   background: white;
   border: 1px solid #E2E8F0;
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: 2px;
   font-size: 12px;
   font-weight: 700;
   color: #1E293B;
@@ -1610,7 +1610,7 @@ body {
 .auth-nav-avatar {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
+  border-radius: 0;
   background: #DCFCE7;
   color: #15803D;
   display: flex;
@@ -1638,7 +1638,7 @@ body {
   font-weight: 700;
   cursor: pointer;
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: 2px;
   display: flex;
   align-items: center;
   gap: 3px;

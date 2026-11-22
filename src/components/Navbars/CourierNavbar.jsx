@@ -1,18 +1,18 @@
 import React from 'react';
-import { 
-  Truck, 
-  MapPin, 
+import {
+  Truck,
+  MapPin,
   LogIn,
   LogOut
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-export default function CourierNavbar({ 
-  selectedCourierId, 
-  setSelectedCourierId, 
+export default function CourierNavbar({
+  selectedCourierId,
+  setSelectedCourierId,
   couriers,
   currentDriver,
-  onLogout 
+  onLogout
 }) {
   const activeCourier = couriers.find(c => c.id === selectedCourierId) || couriers[0];
 
@@ -21,13 +21,20 @@ export default function CourierNavbar({
       <div className="role-nav">
         {/* Brand khusus Driver */}
         <Link to="/driver" style={{ textDecoration: 'none' }} className="brand-section">
-          <div className="brand-logo-icon" style={{ background: 'linear-gradient(135deg, #0284C7 0%, #0369A1 100%)' }}>
-            <Truck size={22} />
-          </div>
+          <img
+            src="/logo.png"
+            alt="PasarHub Driver"
+            style={{
+              width: '40px',
+              height: '40px',
+              objectFit: 'cover',
+              borderRadius: '4px'
+            }}
+          />
           <div className="brand-text">
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <h1>PasarHub</h1>
-              <span style={{ background: '#E0F2FE', color: '#0369A1', padding: '2px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 800 }}>
+              <span style={{ background: '#E0F2FE', color: '#0369A1', padding: '2px 8px', borderRadius: '2px', fontSize: '10px', fontWeight: 800 }}>
                 PORTAL DRIVER KURIR
               </span>
             </div>
@@ -38,14 +45,14 @@ export default function CourierNavbar({
         {/* Courier Profile Selector */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ fontSize: '12px', fontWeight: 700, color: '#4B5563' }}>Kurir:</span>
-          <select 
+          <select
             value={selectedCourierId}
             onChange={(e) => setSelectedCourierId(e.target.value)}
-            style={{ 
-              padding: '6px 12px', 
-              borderRadius: '8px', 
-              border: '1.5px solid #7DD3FC', 
-              fontSize: '13px', 
+            style={{
+              padding: '6px 12px',
+              borderRadius: '2px',
+              border: '1.5px solid #7DD3FC',
+              fontSize: '13px',
               fontWeight: 700,
               background: '#F0F9FF',
               color: '#0369A1',
@@ -68,7 +75,7 @@ export default function CourierNavbar({
           </div>
 
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', background: '#E0F2FE', color: '#0369A1', padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 700, border: '1px solid #BAE6FD' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#0284C7' }}></span>
+            <span style={{ width: '8px', height: '8px', borderRadius: '0', background: '#0284C7' }}></span>
             Online
           </span>
 
@@ -79,8 +86,8 @@ export default function CourierNavbar({
                 {currentDriver.avatar || '🛵'}
               </span>
               <span className="auth-nav-name">{currentDriver.nama}</span>
-              <button 
-                className="auth-logout-btn" 
+              <button
+                className="auth-logout-btn"
                 onClick={onLogout}
                 title="Keluar dari akun driver"
               >
@@ -90,7 +97,7 @@ export default function CourierNavbar({
           ) : (
             <Link to="/login-driver" className="login-nav-btn" style={{ background: '#0284C7' }}>
               <LogIn size={14} />
-              <span>Login Driver</span>
+              <span>Masuk/Daftar</span>
             </Link>
           )}
         </div>

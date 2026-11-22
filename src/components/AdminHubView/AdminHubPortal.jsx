@@ -69,7 +69,7 @@ export default function AdminHubPortal({
     <div className="admin-portal-container">
       {/* Login Warning Banner if not authenticated */}
       {!currentAdmin && (
-        <div style={{ background: '#FEF2F2', border: '1.5px solid #F87171', borderRadius: '12px', padding: '14px 18px', marginBottom: '18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+        <div style={{ background: '#FEF2F2', border: '1.5px solid #F87171', borderRadius: '2px', padding: '14px 18px', marginBottom: '18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
           <div>
             <div style={{ fontSize: '13px', fontWeight: 800, color: '#991B1B' }}>
               🔒 Mode Pratinjau — Anda Belum Login sebagai Admin Paguyuban
@@ -79,7 +79,7 @@ export default function AdminHubPortal({
             </div>
           </div>
           <button 
-            style={{ background: '#1E293B', color: 'white', border: 'none', padding: '8px 18px', borderRadius: '50px', fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}
+            style={{ background: '#1E293B', color: 'white', border: 'none', padding: '8px 18px', borderRadius: '2px', fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}
             onClick={() => navigate('/login-admin')}
           >
             Login Admin Sekarang
@@ -88,18 +88,18 @@ export default function AdminHubPortal({
       )}
 
       {loginAlert && (
-        <div style={{ background: '#FFFBEB', border: '1px solid #FCD34D', color: '#92400E', padding: '10px 14px', borderRadius: '10px', fontSize: '12px', marginBottom: '14px', fontWeight: 600 }}>
+        <div style={{ background: '#FFFBEB', border: '1px solid #FCD34D', color: '#92400E', padding: '10px 14px', borderRadius: '2px', fontSize: '12px', marginBottom: '14px', fontWeight: 600 }}>
           {loginAlert}
         </div>
       )}
       {/* Top Header & Tab Navigation */}
-      <div style={{ background: 'white', padding: '16px 20px', borderRadius: '16px', marginBottom: '20px', border: '1px solid #E5E9EF', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+      <div style={{ background: 'white', padding: '16px 20px', borderRadius: '2px', marginBottom: '20px', border: '1px solid #E5E9EF', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#111827' }}>
               Pusat Kendali Paguyuban &amp; Hub Logistik
             </h2>
-            <span style={{ background: '#DCFCE7', color: '#15803D', fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '12px' }}>
+            <span style={{ background: '#DCFCE7', color: '#15803D', fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '2px' }}>
               Koperasi Otonom
             </span>
           </div>
@@ -109,7 +109,7 @@ export default function AdminHubPortal({
         </div>
 
         {/* Tab Pills */}
-        <div style={{ display: 'flex', gap: '6px', background: '#F1F5F9', padding: '4px', borderRadius: '50px' }}>
+        <div style={{ display: 'flex', gap: '6px', background: '#F1F5F9', padding: '4px', borderRadius: '2px' }}>
           <button
             className={`role-pill-btn ${activeTab === 'konsolidasi' ? 'active' : ''}`}
             onClick={() => setActiveTab('konsolidasi')}
@@ -228,7 +228,7 @@ export default function AdminHubPortal({
                       <span style={{ fontSize: '13px', fontWeight: 800, fontFamily: 'monospace', color: '#111827' }}>
                         {order.idInduk}
                       </span>
-                      <span style={{ fontSize: '11px', background: '#F1F5F9', color: '#475569', padding: '2px 8px', borderRadius: '4px', fontWeight: 700 }}>
+                      <span style={{ fontSize: '11px', background: '#F1F5F9', color: '#475569', padding: '2px 8px', borderRadius: '2px', fontWeight: 700 }}>
                         {order.metodeKirim}
                       </span>
                     </div>
@@ -286,7 +286,7 @@ export default function AdminHubPortal({
                             color: isArrived ? '#16A34A' : '#D97706',
                             background: isArrived ? '#DCFCE7' : '#FEF3C7',
                             padding: '3px 8px',
-                            borderRadius: '6px'
+                            borderRadius: '2px'
                           }}>
                             {isArrived ? "Sudah di Meja Hub" : "Dalam Pengantaran Lapak"}
                           </span>
@@ -298,14 +298,14 @@ export default function AdminHubPortal({
 
                 {/* Courier Assignment & Action */}
                 {!isDispatched ? (
-                  <div style={{ background: '#F8FAFC', borderRadius: '12px', padding: '14px', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+                  <div style={{ background: '#F8FAFC', borderRadius: '2px', padding: '14px', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <Truck size={18} style={{ color: '#00AED6' }} />
                       <span style={{ fontSize: '13px', fontWeight: 700, color: '#334155' }}>
                         Pilih Kurir Internal Pasar:
                       </span>
                       <select 
-                        style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #CBD5E1', fontSize: '13px', fontWeight: 600 }}
+                        style={{ padding: '6px 12px', borderRadius: '2px', border: '1px solid #CBD5E1', fontSize: '13px', fontWeight: 600 }}
                         value={selectedCourierMap[order.idInduk] || couriers[0].nama}
                         onChange={(e) => handleCourierChange(order.idInduk, e.target.value)}
                       >
@@ -330,7 +330,7 @@ export default function AdminHubPortal({
                     </button>
                   </div>
                 ) : (
-                  <div style={{ background: '#F0FDF4', padding: '10px 14px', borderRadius: '10px', fontSize: '12px', color: '#166534', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ background: '#F0FDF4', padding: '10px 14px', borderRadius: '2px', fontSize: '12px', color: '#166534', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <span>✓ Paket telah terkonsolidasi utuh dan diserahkan kepada armada {order.kurirTerkait}.</span>
                     <span style={{ fontWeight: 800 }}>Status: Siap Diantar</span>
                   </div>
@@ -345,9 +345,9 @@ export default function AdminHubPortal({
       {activeTab === 'analitik' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {/* Smart Escrow Transparency Card */}
-          <div style={{ background: 'white', borderRadius: '16px', padding: '24px', border: '1.5px solid #E5E9EF' }}>
+          <div style={{ background: 'white', borderRadius: '2px', padding: '24px', border: '1.5px solid #E5E9EF' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-              <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#DCFCE7', color: '#16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '2px', background: '#DCFCE7', color: '#16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Wallet size={22} />
               </div>
               <div>
@@ -361,7 +361,7 @@ export default function AdminHubPortal({
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '20px' }}>
-              <div style={{ background: '#F8FAFC', padding: '16px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+              <div style={{ background: '#F8FAFC', padding: '16px', borderRadius: '2px', border: '1px solid #E2E8F0' }}>
                 <div style={{ fontSize: '12px', color: '#64748B', fontWeight: 700 }}>Total Dana Ditahan (Escrow Holding)</div>
                 <div style={{ fontSize: '22px', fontWeight: 800, color: '#D97706', marginTop: '4px' }}>
                   Rp {totalEscrowHolding.toLocaleString('id-ID')}
@@ -371,7 +371,7 @@ export default function AdminHubPortal({
                 </div>
               </div>
 
-              <div style={{ background: '#F0FDF4', padding: '16px', borderRadius: '12px', border: '1px solid #BBF7D0' }}>
+              <div style={{ background: '#F0FDF4', padding: '16px', borderRadius: '2px', border: '1px solid #BBF7D0' }}>
                 <div style={{ fontSize: '12px', color: '#166534', fontWeight: 700 }}>Total Dana Berhasil Dicairkan ke UMKM</div>
                 <div style={{ fontSize: '22px', fontWeight: 800, color: '#15803D', marginTop: '4px' }}>
                   Rp {totalDisbursed.toLocaleString('id-ID')}
@@ -381,7 +381,7 @@ export default function AdminHubPortal({
                 </div>
               </div>
 
-              <div style={{ background: '#EFF6FF', padding: '16px', borderRadius: '12px', border: '1px solid #BFDBFE' }}>
+              <div style={{ background: '#EFF6FF', padding: '16px', borderRadius: '2px', border: '1px solid #BFDBFE' }}>
                 <div style={{ fontSize: '12px', color: '#1E40AF', fontWeight: 700 }}>Pendapatan Ongkir Logistik Hub</div>
                 <div style={{ fontSize: '22px', fontWeight: 800, color: '#0284C7', marginTop: '4px' }}>
                   Rp {(orders.length * 5000 + 1250000).toLocaleString('id-ID')}
@@ -400,7 +400,7 @@ export default function AdminHubPortal({
                 {Object.keys(merchants).map(name => {
                   const m = merchants[name];
                   return (
-                    <div key={name} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 14px', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
+                    <div key={name} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 14px', background: '#F8FAFC', borderRadius: '2px', border: '1px solid #E2E8F0' }}>
                       <span style={{ fontSize: '13px', fontWeight: 600, color: '#1F2937' }}>
                         {m.avatar} {name.split(' (')[0]}
                       </span>
@@ -420,9 +420,9 @@ export default function AdminHubPortal({
       {activeTab === 'kurir' && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
           {couriers.map(c => (
-            <div key={c.id} style={{ background: 'white', borderRadius: '16px', padding: '20px', border: '1px solid #E5E9EF' }}>
+            <div key={c.id} style={{ background: 'white', borderRadius: '2px', padding: '20px', border: '1px solid #E5E9EF' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: '#E0F2FE', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '2px', background: '#E0F2FE', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>
                   🛵
                 </div>
                 <div>
@@ -452,7 +452,7 @@ export default function AdminHubPortal({
 
       {/* TAB 4: DISPUTE RESOLUTION */}
       {activeTab === 'dispute' && (
-        <div style={{ background: 'white', borderRadius: '16px', padding: '24px', border: '1px solid #E5E9EF' }}>
+        <div style={{ background: 'white', borderRadius: '2px', padding: '24px', border: '1px solid #E5E9EF' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
             <AlertCircle size={22} style={{ color: '#00AED6' }} />
             <div>
@@ -463,17 +463,17 @@ export default function AdminHubPortal({
             </div>
           </div>
 
-          <div style={{ background: '#F8FAFC', borderRadius: '12px', padding: '16px', border: '1px solid #E2E8F0', marginBottom: '12px' }}>
+          <div style={{ background: '#F8FAFC', borderRadius: '2px', padding: '16px', border: '1px solid #E2E8F0', marginBottom: '12px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
               <span style={{ fontSize: '12px', fontWeight: 800, color: '#111827' }}>Kasus #DSP-091: Cabai Kurang Segar</span>
-              <span style={{ fontSize: '11px', background: '#DCFCE7', color: '#15803D', padding: '2px 8px', borderRadius: '10px', fontWeight: 700 }}>Terselesaikan</span>
+              <span style={{ fontSize: '11px', background: '#DCFCE7', color: '#15803D', padding: '2px 8px', borderRadius: '2px', fontWeight: 700 }}>Terselesaikan</span>
             </div>
             <p style={{ fontSize: '12px', color: '#4B5563', lineHeight: 1.5 }}>
               Konsumen melaporkan 100g cabai rawit lembek. Admin Paguyuban memfasilitasi penggantian langsung dari Lapak Pak Slamet dalam waktu 15 menit melalui armada kurir internal. Escrow berhasil dicairkan setelah pembeli puas.
             </p>
           </div>
 
-          <div style={{ background: '#F0FDF4', borderRadius: '10px', padding: '12px', fontSize: '12px', color: '#166534', fontWeight: 600 }}>
+          <div style={{ background: '#F0FDF4', borderRadius: '2px', padding: '12px', fontSize: '12px', color: '#166534', fontWeight: 600 }}>
             ✓ Rekening Bersama Escrow PasarHub memastikan perlindungan ganda: Pembeli dijamin menerima barang prima, Pedagang dijamin menerima bayaran 100%.
           </div>
         </div>

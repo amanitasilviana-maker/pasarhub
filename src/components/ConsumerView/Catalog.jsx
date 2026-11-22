@@ -249,7 +249,7 @@ export default function Catalog({
       </div>
 
       {filteredProducts.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '50px 20px', background: 'white', borderRadius: '16px', marginTop: '20px' }}>
+        <div style={{ textAlign: 'center', padding: '50px 20px', background: 'white', borderRadius: '2px', marginTop: '20px' }}>
           <p style={{ fontSize: '15px', color: '#6B7280' }}>
             Tidak ada produk yang cocok dengan filter ini.
           </p>
