@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
 import ConsumerNavbar from './components/Navbars/ConsumerNavbar';
 import MerchantNavbar from './components/Navbars/MerchantNavbar';
@@ -16,6 +16,11 @@ import AdminHubPortal from './components/AdminHubView/AdminHubPortal';
 import FooterPortalLinks from './components/FooterPortalLinks';
 import LoginPage from './components/Auth/LoginPage';
 
+import InformasiPage from './components/Info/InformasiPage';
+import PanduanMitraPage from './components/Info/PanduanMitraPage';
+import PanduanDriverPage from './components/Info/PanduanDriverPage';
+
+
 import {
   INITIAL_PRODUCTS,
   INITIAL_MERCHANTS,
@@ -24,10 +29,13 @@ import {
 } from './data/mockData';
 
 export default function App() {
+  const navigate = useNavigate();
   const [products, setProducts] = useState(INITIAL_PRODUCTS);
   const [merchants, setMerchants] = useState(INITIAL_MERCHANTS);
-  const [couriers] = useState(INITIAL_COURIERS);
+  const [couriers, setCouriers] = useState(INITIAL_COURIERS);
   const [orders, setOrders] = useState(INITIAL_ORDERS);
+  const [dbStalls, setDbStalls] = useState([]);
+  const [dbCouriers, setDbCouriers] = useState([]);
 
   const [currentUser, setCurrentUser] = useState(null);
   const [currentMerchant, setCurrentMerchant] = useState(null);
@@ -38,9 +46,25 @@ export default function App() {
   const [selectedCourierId, setSelectedCourierId] = useState(INITIAL_COURIERS[0].id);
   const [loudAlertSimulated, setLoudAlertSimulated] = useState(false);
 
-  const [cart, setCart] = useState([]);
-  const [deliveryMethod, setDeliveryMethod] = useState('delivery');
+  // Guest Mode Cart Persistence (localStorage)
+  const [cart, setCart] = useState(() => {
+    try {
+      const saved = localStorage.getItem('pasarhub_guest_cart');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
 
+  useEffect(() => {
+    try {
+      localStorage.setItem('pasarhub_guest_cart', JSON.stringify(cart));
+    } catch (e) {
+      console.error('Gagal menyimpan keranjang lokal:', e);
+    }
+  }, [cart]);
+
+  const [deliveryMethod, setDeliveryMethod] = useState('delivery');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isTrackingOpen, setIsTrackingOpen] = useState(false);
@@ -69,6 +93,39 @@ export default function App() {
           });
           setProducts(merged);
         }
+      }
+
+      const verRes = await fetch('/api/v1/admin/verifications');
+      if (verRes.ok) {
+        const { stalls, couriers: fetchedCouriers } = await verRes.json();
+        setDbStalls(stalls);
+        setDbCouriers(fetchedCouriers);
+
+        setMerchants((prev) => {
+          const updated = { ...prev };
+          stalls.forEach((st) => {
+            if (updated[st.stall_name]) {
+              updated[st.stall_name] = {
+                ...updated[st.stall_name],
+                dbStallId: st.id,
+                is_approved: st.is_approved,
+                verification_status: st.user?.verification_status || 'VERIFIED'
+              };
+            } else {
+              updated[st.stall_name] = {
+                nama: st.stall_name,
+                pemilik: st.user?.name || 'Mitra Baru',
+                lokasiLapak: st.block_number,
+                avatar: '🏪',
+                saldo: Number(st.user?.wallet_balance || 0),
+                dbStallId: st.id,
+                is_approved: st.is_approved,
+                verification_status: st.user?.verification_status || 'PENDING_REVIEW'
+              };
+            }
+          });
+          return updated;
+        });
       }
 
       const ordRes = await fetch('/api/v1/orders');
@@ -131,12 +188,30 @@ export default function App() {
   }, []);
 
   const handleLoginSuccess = (persona, authPayload) => {
-    if (persona === 'user') setCurrentUser(authPayload);
+    if (persona === 'user') {
+      setCurrentUser(authPayload);
+      // Migrasi otomatis keranjang guest langsung ke modal checkout jika ada item
+      if (cart.length > 0) {
+        navigate('/');
+        setIsCartOpen(false);
+        setIsCheckoutOpen(true);
+      }
+    }
     if (persona === 'umkm') {
-      setCurrentMerchant(authPayload);
+      const merchantInfo = merchants[authPayload.nama] || {};
+      setCurrentMerchant({
+        ...authPayload,
+        is_approved: merchantInfo.is_approved ?? true,
+        verification_status: merchantInfo.verification_status || 'VERIFIED'
+      });
       if (merchants[authPayload.nama]) setSelectedMerchant(authPayload.nama);
     }
-    if (persona === 'driver') setCurrentDriver(authPayload);
+    if (persona === 'driver') {
+      setCurrentDriver({
+        ...authPayload,
+        verification_status: authPayload.verification_status || 'VERIFIED'
+      });
+    }
     if (persona === 'admin') setCurrentAdmin(authPayload);
   };
 
@@ -145,6 +220,32 @@ export default function App() {
     if (persona === 'umkm') setCurrentMerchant(null);
     if (persona === 'driver') setCurrentDriver(null);
     if (persona === 'admin') setCurrentAdmin(null);
+  };
+
+  const handleApproveStall = async (stallId, isApproved) => {
+    try {
+      await fetch(`/api/v1/admin/stalls/${stallId}/approval`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isApproved })
+      });
+      await fetchDatabaseData();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleApproveCourier = async (courierId, isVerified) => {
+    try {
+      await fetch(`/api/v1/admin/couriers/${courierId}/approval`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isVerified })
+      });
+      await fetchDatabaseData();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleAddNewProduct = async (newProduct) => {
@@ -209,6 +310,7 @@ export default function App() {
       setOrders((prev) => [newOrder, ...prev]);
     }
     setCart([]);
+    localStorage.removeItem('pasarhub_guest_cart');
     setIsCheckoutOpen(false);
     setIsTrackingOpen(true);
   };
@@ -258,6 +360,7 @@ export default function App() {
       };
     });
   };
+
   const totalCartCount = cart.reduce((sum, it) => sum + it.qty, 0);
   const activeTrackingOrder = orders.find((o) => o.idInduk === activeTrackingOrderId) || orders[0];
 
@@ -330,6 +433,9 @@ export default function App() {
             />
           </div>
         } />
+        <Route path="/informasi" element={<InformasiPage />} />
+        <Route path="/panduan-mitra" element={<PanduanMitraPage />} />
+        <Route path="/panduan-driver" element={<PanduanDriverPage />} />
 
         <Route path="/umkm" element={
           <div className="page-container">
@@ -391,7 +497,11 @@ export default function App() {
                 orders={orders}
                 merchants={merchants}
                 couriers={couriers}
+                dbStalls={dbStalls}
+                dbCouriers={dbCouriers}
                 onConsolidateOrder={handleConsolidateOrder}
+                onApproveStall={handleApproveStall}
+                onApproveCourier={handleApproveCourier}
                 currentAdmin={currentAdmin}
               />
             </main>

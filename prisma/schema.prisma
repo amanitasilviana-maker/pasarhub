@@ -54,14 +54,29 @@ enum LedgerType {
   REFUND
 }
 
+enum VerificationStatus {
+  UNVERIFIED
+  PENDING_REVIEW
+  VERIFIED
+  REJECTED
+}
+
+enum MarketStatus {
+  SETUP_REQUIRED
+  ACTIVE
+  SUSPENDED
+}
+
 model Market {
   id                String          @id @default(uuid())
   name              String
   address           String
-  hub_lat           Float
-  hub_lng           Float
-  flat_delivery_fee Decimal         @db.Decimal(10, 2)
-  platform_fee      Decimal         @db.Decimal(10, 2)
+  hub_lat           Float?
+  hub_lng           Float?
+  flat_delivery_fee Decimal         @default(5000) @db.Decimal(10, 2)
+  platform_fee      Decimal         @default(0) @db.Decimal(10, 2)
+  escrow_bank_acc   String?
+  status            MarketStatus    @default(SETUP_REQUIRED)
   users             User[]
   stalls            MerchantStall[]
   orders            MasterOrder[]
@@ -69,20 +84,23 @@ model Market {
 }
 
 model User {
-  id             String          @id @default(uuid())
-  market_id      String
-  market         Market          @relation(fields: [market_id], references: [id])
-  name           String
-  phone          String          @unique
-  email          String?         @unique
-  password_hash  String
-  role           Role            @default(CUSTOMER)
-  wallet_balance Decimal         @default(0) @db.Decimal(12, 2)
-  stalls         MerchantStall[]
-  customerOrders MasterOrder[]   @relation("CustomerOrders")
-  courierOrders  MasterOrder[]   @relation("CourierOrders")
-  ledgers        WalletLedger[]
-  created_at     DateTime        @default(now())
+  id                  String             @id @default(uuid())
+  market_id           String
+  market              Market             @relation(fields: [market_id], references: [id])
+  name                String
+  phone               String             @unique
+  email               String?            @unique
+  password_hash       String
+  role                Role               @default(CUSTOMER)
+  verification_status VerificationStatus @default(UNVERIFIED)
+  wallet_balance      Decimal            @default(0) @db.Decimal(12, 2)
+  id_card_url         String?
+  license_url         String?
+  stalls              MerchantStall[]
+  customerOrders      MasterOrder[]      @relation("CustomerOrders")
+  courierOrders       MasterOrder[]      @relation("CourierOrders")
+  ledgers             WalletLedger[]
+  created_at          DateTime           @default(now())
 }
 
 model MerchantStall {
@@ -94,6 +112,7 @@ model MerchantStall {
   stall_name   String
   block_number String
   is_open      Boolean    @default(true)
+  is_approved  Boolean    @default(false)
   products     Product[]
   sub_orders   SubOrder[]
 }

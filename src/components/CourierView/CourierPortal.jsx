@@ -1,24 +1,23 @@
 import React, { useState } from 'react';
-import { 
-  Truck, 
-  MapPin, 
-  Navigation, 
-  Phone, 
-  CheckCircle2, 
-  Package, 
-  Clock, 
-  Compass, 
+import {
+  Truck,
+  MapPin,
+  Navigation,
+  Phone,
+  CheckCircle2,
+  Package,
+  Clock,
+  Compass,
   MessageCircle,
   ExternalLink,
   ShieldCheck
 } from 'lucide-react';
 import RouteMap from './RouteMap';
-
 import { useNavigate } from 'react-router-dom';
 
-export default function CourierPortal({ 
-  couriers, 
-  orders, 
+export default function CourierPortal({
+  couriers,
+  orders,
   onUpdateOrderStatus,
   selectedCourierId: propSelectedCourierId,
   setSelectedCourierId: propSetSelectedCourierId,
@@ -27,19 +26,32 @@ export default function CourierPortal({
   const navigate = useNavigate();
   const [internalCourierId, setInternalCourierId] = useState(couriers[0].id);
   const [loginAlert, setLoginAlert] = useState("");
+  const [isReadyForDuty, setIsReadyForDuty] = useState(true);
+
   const selectedCourierId = propSelectedCourierId || internalCourierId;
   const setSelectedCourierId = propSetSelectedCourierId || setInternalCourierId;
 
   const activeCourier = couriers.find(c => c.id === selectedCourierId) || couriers[0];
+  const isCourierVerified = currentDriver
+    ? (currentDriver.verification_status ? currentDriver.verification_status === 'VERIFIED' : true)
+    : false;
 
   // Orders assigned to this courier or ready for pickup
-  const assignedOrders = orders.filter(o => 
+  const assignedOrders = orders.filter(o =>
     o.kurirTerkait && (o.kurirTerkait.includes(activeCourier.nama) || o.kurirTerkait.includes(activeCourier.nomorInduk))
   );
 
   const handleActionWithAuth = (actionCallback) => {
     if (!currentDriver) {
       setLoginAlert("⚠️ Anda wajib Login sebagai Driver Kurir terlebih dahulu untuk menjalankan pengantaran paket.");
+      return;
+    }
+    if (!isCourierVerified) {
+      setLoginAlert("🔒 Akun kurir Anda belum diverifikasi oleh Admin Hub Pasar.");
+      return;
+    }
+    if (!isReadyForDuty) {
+      setLoginAlert("⚠️ Aktifkan status 'Siap Terima Order' terlebih dahulu sebelum mengambil atau mengantar paket.");
       return;
     }
     setLoginAlert("");
@@ -59,7 +71,7 @@ export default function CourierPortal({
               Silakan login untuk mengambil paket konsolidasi di Hub dan menjalankan pengantaran.
             </div>
           </div>
-          <button 
+          <button
             style={{ background: '#0284C7', color: 'white', border: 'none', padding: '8px 18px', borderRadius: '2px', fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}
             onClick={() => navigate('/login-driver')}
           >
@@ -68,11 +80,24 @@ export default function CourierPortal({
         </div>
       )}
 
+      {/* Unverified Driver Warning */}
+      {currentDriver && !isCourierVerified && (
+        <div style={{ background: '#FEF2F2', border: '1.5px solid #F87171', borderRadius: '2px', padding: '14px 18px', marginBottom: '18px' }}>
+          <div style={{ fontSize: '13px', fontWeight: 800, color: '#991B1B' }}>
+            🔒 Akun Kurir Belum Terverifikasi ({currentDriver.verification_status || 'PENDING_REVIEW'})
+          </div>
+          <p style={{ fontSize: '12px', color: '#B91C1C', marginTop: '4px' }}>
+            Silakan serahkan dokumen fisik (KTP domisili sekitar pasar, SIM C, dan STNK) ke Posko Admin Hub untuk membuka akses pengambilan paket.
+          </p>
+        </div>
+      )}
+
       {loginAlert && (
         <div style={{ background: '#FFFBEB', border: '1px solid #FCD34D', color: '#92400E', padding: '10px 14px', borderRadius: '2px', fontSize: '12px', marginBottom: '14px', fontWeight: 600 }}>
           {loginAlert}
         </div>
       )}
+
       {/* Courier Selector Tabs */}
       <div style={{ background: 'white', padding: '12px 16px', borderRadius: '2px', marginBottom: '18px', border: '1px solid #E5E9EF', display: 'flex', alignItems: 'center', gap: '10px' }}>
         <span style={{ fontSize: '12px', fontWeight: 700, color: '#6B7280', whiteSpace: 'nowrap' }}>
@@ -88,6 +113,43 @@ export default function CourierPortal({
             <span>{c.avatar} {c.nama} ({c.nomorInduk})</span>
           </button>
         ))}
+      </div>
+
+      {/* Sakelar Aktivasi Terima Order Kurir */}
+      <div style={{ background: 'white', border: '1px solid #E5E9EF', borderRadius: '2px', padding: '14px 18px', marginBottom: '18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+        <div>
+          <span style={{ fontSize: '13px', fontWeight: 800, color: '#111827' }}>Status Operasional Kurir: </span>
+          <span style={{ fontSize: '13px', fontWeight: 800, color: (isCourierVerified && isReadyForDuty) ? '#16A34A' : '#6B7280' }}>
+            {!currentDriver
+              ? 'TERKUNCI (Belum Login)'
+              : !isCourierVerified
+                ? 'TERKUNCI (Belum Verifikasi Admin)'
+                : isReadyForDuty
+                  ? 'AKTIF (Siap Terima Paket Hub)'
+                  : 'NONAKTIF (Istirahat)'}
+          </span>
+        </div>
+
+        <button
+          disabled={!currentDriver || !isCourierVerified}
+          onClick={() => setIsReadyForDuty(!isReadyForDuty)}
+          style={{
+            background: (!currentDriver || !isCourierVerified) ? '#CBD5E1' : isReadyForDuty ? '#EF4444' : '#0284C7',
+            color: 'white',
+            border: 'none',
+            padding: '8px 16px',
+            borderRadius: '2px',
+            fontSize: '12px',
+            fontWeight: 700,
+            cursor: (!currentDriver || !isCourierVerified) ? 'not-allowed' : 'pointer'
+          }}
+        >
+          {(!currentDriver || !isCourierVerified)
+            ? '🔒 Terkunci'
+            : isReadyForDuty
+              ? 'Nonaktifkan (Istirahat)'
+              : 'Aktifkan Terima Order'}
+        </button>
       </div>
 
       {/* Courier Profile & Logistics Hub Summary */}
@@ -156,12 +218,12 @@ export default function CourierPortal({
             const isDelivering = order.tahapStatus === 'sedang_diantar';
 
             return (
-              <div 
+              <div
                 key={order.idInduk}
-                style={{ 
-                  background: 'white', 
-                  borderRadius: '2px', 
-                  padding: '20px', 
+                style={{
+                  background: 'white',
+                  borderRadius: '2px',
+                  padding: '20px',
                   border: '1.5px solid #E5E9EF',
                   boxShadow: '0 4px 12px rgba(0,0,0,0.04)'
                 }}
@@ -180,10 +242,10 @@ export default function CourierPortal({
                   </div>
 
                   <div style={{ textAlign: 'right' }}>
-                    <span style={{ 
-                      fontSize: '11px', 
-                      fontWeight: 800, 
-                      padding: '4px 12px', 
+                    <span style={{
+                      fontSize: '11px',
+                      fontWeight: 800,
+                      padding: '4px 12px',
                       borderRadius: '20px',
                       background: isCompleted ? '#DCFCE7' : isDelivering ? '#FEF3C7' : '#E0F2FE',
                       color: isCompleted ? '#15803D' : isDelivering ? '#B45309' : '#0369A1'
@@ -210,22 +272,22 @@ export default function CourierPortal({
 
                 {/* Consumer contact & Actions */}
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                  <a 
+                  <a
                     href={`https://wa.me/6281299887766?text=Halo%20${encodeURIComponent(order.konsumen.nama)},%20saya%20kurir%20PasarHub%20sedang%20mengantar%20pesanan%20Anda.`}
                     target="_blank"
                     rel="noreferrer"
-                    style={{ 
-                      background: '#E8F5E9', 
-                      color: '#00AA13', 
+                    style={{
+                      background: '#E8F5E9',
+                      color: '#00AA13',
                       border: '1px solid #A7F3D0',
-                      padding: '10px 16px', 
-                      borderRadius: '2px', 
-                      fontSize: '12px', 
-                      fontWeight: 700, 
+                      padding: '10px 16px',
+                      borderRadius: '2px',
+                      fontSize: '12px',
+                      fontWeight: 700,
                       textDecoration: 'none',
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: '6px' 
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
                     }}
                   >
                     <MessageCircle size={15} /> Hubungi via WhatsApp

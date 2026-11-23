@@ -52,6 +52,8 @@ export default function MerchantPortal({
   const setLoudAlertSimulated = propSetLoudAlertSimulated || setInternalLoudAlert;
 
   const currentData = merchants[selectedMerchant] || {};
+  const isApproved = currentData.is_approved !== undefined ? currentData.is_approved : true;
+  const verificationStatus = currentData.verification_status || (isApproved ? 'VERIFIED' : 'PENDING_REVIEW');
 
   const handleOpenAddModal = () => {
     if (!currentMerchant) {
@@ -91,7 +93,11 @@ export default function MerchantPortal({
     setNewProductName("");
     setNewProductPrice("");
     setNewProductDesc("");
-    alert(`Berhasil menambahkan produk "${newProd.nama}" ke katalog pasar!`);
+    alert(
+      isApproved
+        ? `Berhasil menambahkan produk "${newProd.nama}" ke katalog pasar!`
+        : `Draf produk "${newProd.nama}" berhasil disimpan! Produk akan otomatis tayang setelah lapak diverifikasi Admin Pasar.`
+    );
   };
 
   // Extract all sub-orders for this specific merchant
@@ -112,6 +118,10 @@ export default function MerchantPortal({
   });
 
   const handleWithdraw = () => {
+    if (!isApproved) {
+      alert("Fitur pencairan saldo terkunci sampai lapak diverifikasi oleh Admin Pasar.");
+      return;
+    }
     if (currentData.saldo <= 0) {
       alert("Saldo aktif saat ini masih Rp 0. Tunggu pesanan diselesaikan pembeli.");
       return;
@@ -196,6 +206,19 @@ export default function MerchantPortal({
         </div>
       )}
 
+      {/* Banner Peringatan Akun Belum Disetujui Admin */}
+      {!isApproved && (
+        <div style={{ background: '#FFFBEB', border: '1.5px solid #FCD34D', borderRadius: '2px', padding: '14px 18px', marginBottom: '18px' }}>
+          <div style={{ fontSize: '14px', fontWeight: 800, color: '#92400E', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <AlertTriangle size={18} />
+            <span>⚠️ Akun Toko Menunggu Verifikasi Admin Pasar ({verificationStatus})</span>
+          </div>
+          <p style={{ fontSize: '12px', color: '#B45309', marginTop: '4px', lineHeight: 1.5 }}>
+            Anda tetap dapat menyusun draf katalog produk menggunakan tombol <strong>+ Tambah Dagangan Baru</strong>, namun produk Anda belum tampil di katalog pembeli dan fitur penerimaan pesanan terkunci hingga Pengurus Pasar menyetujui berkas lapak Anda.
+          </p>
+        </div>
+      )}
+
       {loginAlert && (
         <div style={{ background: '#FFFBEB', border: '1px solid #FCD34D', color: '#92400E', padding: '10px 14px', borderRadius: '2px', fontSize: '12px', marginBottom: '14px', fontWeight: 600 }}>
           {loginAlert}
@@ -213,8 +236,15 @@ export default function MerchantPortal({
               <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#111827' }}>
                 {currentData.nama}
               </h2>
-              <span style={{ background: '#DCFCE7', color: '#15803D', fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '2px' }}>
-                Lapak Aktif
+              <span style={{
+                background: isApproved ? '#DCFCE7' : '#FEF3C7',
+                color: isApproved ? '#15803D' : '#B45309',
+                fontSize: '11px',
+                fontWeight: 700,
+                padding: '2px 8px',
+                borderRadius: '2px'
+              }}>
+                {isApproved ? 'Lapak Aktif' : 'Menunggu Verifikasi'}
               </span>
             </div>
             <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '2px' }}>
@@ -231,7 +261,7 @@ export default function MerchantPortal({
             title="Tambah produk dagangan baru ke katalog pasar"
           >
             <PlusCircle size={15} />
-            <span>+ Tambah Dagangan Baru</span>
+            <span>{isApproved ? '+ Tambah Dagangan Baru' : '+ Tambah Draf Produk'}</span>
           </button>
 
           <button
@@ -263,19 +293,19 @@ export default function MerchantPortal({
           <button
             className="action-btn"
             style={{
-              background: '#00AA13',
+              background: !isApproved ? '#94A3B8' : '#00AA13',
               color: 'white',
               padding: '12px 24px',
               borderRadius: '2px',
               fontSize: '14px',
               fontWeight: 800,
-              boxShadow: '0 4px 14px rgba(0, 170, 19, 0.4)',
-              cursor: 'pointer'
+              boxShadow: isApproved ? '0 4px 14px rgba(0, 170, 19, 0.4)' : 'none',
+              cursor: !isApproved ? 'not-allowed' : 'pointer'
             }}
             onClick={handleWithdraw}
-            disabled={isWithdrawing || (currentData.saldo || 0) <= 0}
+            disabled={!isApproved || isWithdrawing || (currentData.saldo || 0) <= 0}
           >
-            {isWithdrawing ? "Mentransfer..." : "Tarik Saldo Instan (Rp 0 Biaya)"}
+            {!isApproved ? "Terkunci (Menunggu Verifikasi)" : isWithdrawing ? "Mentransfer..." : "Tarik Saldo Instan (Rp 0 Biaya)"}
           </button>
           <div style={{ fontSize: '11px', color: '#9CA3AF', textAlign: 'center', marginTop: '6px' }}>
             Pencairan otomatis ke Rekening / E-Wallet {currentData.pemilik}
@@ -294,115 +324,127 @@ export default function MerchantPortal({
         </span>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-        {relevantSubOrders.length === 0 ? (
-          <div style={{ background: 'white', padding: '40px 20px', borderRadius: '2px', textAlign: 'center', border: '1px solid #E5E7EB' }}>
-            <Store size={40} style={{ color: '#D1D5DB', margin: '0 auto 12px auto' }} />
-            <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#374151', marginBottom: '4px' }}>
-              Belum Ada Pesanan untuk Lapak Ini
-            </h4>
-            <p style={{ fontSize: '13px', color: '#6B7280' }}>
-              Buka menu Konsumen untuk mencoba belanja produk dari lapak ini.
-            </p>
-          </div>
-        ) : (
-          relevantSubOrders.map(item => {
-            const isDeliveredToHub = item.subOrder.statusLapak.includes('Sudah');
-            const isCompleted = item.tahapStatus === 'selesai';
+      {!isApproved ? (
+        <div style={{ background: '#F8FAFC', padding: '36px 20px', borderRadius: '2px', textAlign: 'center', border: '1.5px dashed #CBD5E1', opacity: 0.85 }}>
+          <Store size={38} style={{ color: '#94A3B8', margin: '0 auto 10px auto' }} />
+          <h4 style={{ fontSize: '15px', fontWeight: 800, color: '#475569', marginBottom: '4px' }}>
+            Fitur Penerimaan Pesanan Terkunci
+          </h4>
+          <p style={{ fontSize: '12px', color: '#64748B', maxWidth: '420px', margin: '0 auto' }}>
+            Pesanan masuk dari konsumen akan otomatis aktif setelah Admin Hub memverifikasi dan menyetujui lapak Anda.
+          </p>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          {relevantSubOrders.length === 0 ? (
+            <div style={{ background: 'white', padding: '40px 20px', borderRadius: '2px', textAlign: 'center', border: '1px solid #E5E7EB' }}>
+              <Store size={40} style={{ color: '#D1D5DB', margin: '0 auto 12px auto' }} />
+              <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#374151', marginBottom: '4px' }}>
+                Belum Ada Pesanan untuk Lapak Ini
+              </h4>
+              <p style={{ fontSize: '13px', color: '#6B7280' }}>
+                Buka menu Konsumen untuk mencoba belanja produk dari lapak ini.
+              </p>
+            </div>
+          ) : (
+            relevantSubOrders.map(item => {
+              const isDeliveredToHub = item.subOrder.statusLapak.includes('Sudah');
+              const isCompleted = item.tahapStatus === 'selesai';
 
-            return (
-              <div
-                key={item.subOrder.idSub}
-                style={{
-                  background: 'white',
-                  borderRadius: '2px',
-                  padding: '18px',
-                  border: '1.5px solid #E5E9EF',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.03)'
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '12px', background: '#F1F5F9', color: '#475569', padding: '3px 8px', borderRadius: '2px', fontWeight: 700, fontFamily: 'monospace' }}>
-                        {item.subOrder.idSub}
-                      </span>
-                      <span style={{ fontSize: '12px', color: '#6B7280' }}>• ID Induk: {item.idInduk}</span>
+              return (
+                <div
+                  key={item.subOrder.idSub}
+                  style={{
+                    background: 'white',
+                    borderRadius: '2px',
+                    padding: '18px',
+                    border: '1.5px solid #E5E9EF',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.03)'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontSize: '12px', background: '#F1F5F9', color: '#475569', padding: '3px 8px', borderRadius: '2px', fontWeight: 700, fontFamily: 'monospace' }}>
+                          {item.subOrder.idSub}
+                        </span>
+                        <span style={{ fontSize: '12px', color: '#6B7280' }}>• ID Induk: {item.idInduk}</span>
+                      </div>
+                      <div style={{ fontSize: '13px', fontWeight: 600, color: '#1F2937', marginTop: '4px' }}>
+                        Pembeli: {item.konsumenNama}
+                      </div>
                     </div>
-                    <div style={{ fontSize: '13px', fontWeight: 600, color: '#1F2937', marginTop: '4px' }}>
-                      Pembeli: {item.konsumenNama}
+
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{
+                        fontSize: '11px',
+                        fontWeight: 800,
+                        padding: '4px 10px',
+                        borderRadius: '20px',
+                        background: isCompleted ? '#DCFCE7' : isDeliveredToHub ? '#E0F2FE' : '#FEF3C7',
+                        color: isCompleted ? '#15803D' : isDeliveredToHub ? '#0369A1' : '#B45309'
+                      }}>
+                        {isCompleted ? "✓ Selesai & Dana Cair" : item.subOrder.statusLapak}
+                      </div>
+                      <div style={{ fontSize: '15px', fontWeight: 800, color: '#00AA13', marginTop: '4px' }}>
+                        Rp {item.subOrder.totalSub.toLocaleString('id-ID')} (100% Bersih)
+                      </div>
                     </div>
                   </div>
 
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{
-                      fontSize: '11px',
-                      fontWeight: 800,
-                      padding: '4px 10px',
-                      borderRadius: '20px',
-                      background: isCompleted ? '#DCFCE7' : isDeliveredToHub ? '#E0F2FE' : '#FEF3C7',
-                      color: isCompleted ? '#15803D' : isDeliveredToHub ? '#0369A1' : '#B45309'
-                    }}>
-                      {isCompleted ? "✓ Selesai & Dana Cair" : item.subOrder.statusLapak}
+                  {/* Items to prepare */}
+                  <div style={{ background: '#F8FAFC', borderRadius: '2px', padding: '12px', marginBottom: '14px', border: '1px solid #EEF2F6' }}>
+                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', marginBottom: '6px' }}>
+                      Barang yang Perlu Disiapkan Lapak Ini:
                     </div>
-                    <div style={{ fontSize: '15px', fontWeight: 800, color: '#00AA13', marginTop: '4px' }}>
-                      Rp {item.subOrder.totalSub.toLocaleString('id-ID')} (100% Bersih)
-                    </div>
+                    {item.subOrder.items.map((it, idx) => (
+                      <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', padding: '4px 0' }}>
+                        <span style={{ fontWeight: 600, color: '#1E293B' }}>
+                          📦 {it.qty || 1}x {it.nama}
+                        </span>
+                        <span style={{ color: '#475569' }}>
+                          Rp {((it.harga || 0) * (it.qty || 1)).toLocaleString('id-ID')}
+                        </span>
+                      </div>
+                    ))}
                   </div>
+
+                  {/* Actions */}
+                  {!isDeliveredToHub && !isCompleted && (
+                    <button
+                      className="action-btn"
+                      style={{
+                        background: '#00AA13',
+                        color: 'white',
+                        padding: '12px',
+                        borderRadius: '2px',
+                        fontSize: '13px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      onClick={() => onDeliverSubOrderToHub(item.idInduk, item.subOrder.idSub)}
+                    >
+                      <Send size={15} />
+                      <span>Konfirmasi: Barang Siap &amp; Serahkan ke Titik Hub Pasar</span>
+                    </button>
+                  )}
+
+                  {isDeliveredToHub && !isCompleted && (
+                    <div style={{ background: '#F0FDF4', padding: '10px 14px', borderRadius: '2px', fontSize: '12px', color: '#166534', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <CheckCircle2 size={16} />
+                      <span>Barang sudah diantar ke Meja Konsolidasi Hub. Menunggu kurir mengantar ke pembeli.</span>
+                    </div>
+                  )}
                 </div>
-
-                {/* Items to prepare */}
-                <div style={{ background: '#F8FAFC', borderRadius: '2px', padding: '12px', marginBottom: '14px', border: '1px solid #EEF2F6' }}>
-                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', marginBottom: '6px' }}>
-                    Barang yang Perlu Disiapkan Lapak Ini:
-                  </div>
-                  {item.subOrder.items.map((it, idx) => (
-                    <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', padding: '4px 0' }}>
-                      <span style={{ fontWeight: 600, color: '#1E293B' }}>
-                        📦 {it.qty || 1}x {it.nama}
-                      </span>
-                      <span style={{ color: '#475569' }}>
-                        Rp {((it.harga || 0) * (it.qty || 1)).toLocaleString('id-ID')}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Actions */}
-                {!isDeliveredToHub && !isCompleted && (
-                  <button
-                    className="action-btn"
-                    style={{
-                      background: '#00AA13',
-                      color: 'white',
-                      padding: '12px',
-                      borderRadius: '2px',
-                      fontSize: '13px',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '8px'
-                    }}
-                    onClick={() => onDeliverSubOrderToHub(item.idInduk, item.subOrder.idSub)}
-                  >
-                    <Send size={15} />
-                    <span>Konfirmasi: Barang Siap &amp; Serahkan ke Titik Hub Pasar</span>
-                  </button>
-                )}
-
-                {isDeliveredToHub && !isCompleted && (
-                  <div style={{ background: '#F0FDF4', padding: '10px 14px', borderRadius: '2px', fontSize: '12px', color: '#166534', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <CheckCircle2 size={16} />
-                    <span>Barang sudah diantar ke Meja Konsolidasi Hub. Menunggu kurir mengantar ke pembeli.</span>
-                  </div>
-                )}
-              </div>
-            );
-          })
-        )}
-      </div>
+              );
+            })
+          )}
+        </div>
+      )}
 
       {/* MODAL TAMBAH DAGANGAN BARU */}
       {isAddModalOpen && (
@@ -411,7 +453,7 @@ export default function MerchantPortal({
             <div className="modal-header">
               <h3>
                 <PlusCircle size={20} style={{ color: '#00AA13' }} />
-                <span>Tambah Dagangan Baru ke Lapak</span>
+                <span>{isApproved ? 'Tambah Dagangan Baru ke Lapak' : 'Tambah Draf Produk Dagangan'}</span>
               </h3>
               <button className="modal-close-btn" onClick={() => setIsAddModalOpen(false)}>
                 <X size={18} />
@@ -518,7 +560,7 @@ export default function MerchantPortal({
                   className="cart-action-btn"
                   style={{ flex: 2, justifyContent: 'center' }}
                 >
-                  Simpan &amp; Publikasikan Produk
+                  {isApproved ? 'Simpan & Publikasikan Produk' : 'Simpan Sebagai Draf'}
                 </button>
               </div>
             </form>

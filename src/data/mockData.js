@@ -1,4 +1,5 @@
 export const INITIAL_PRODUCTS = [
+  // --- KATEGORI: DAGING (Lapak Bu Joko) ---
   {
     id: 101,
     nama: "Daging Sapi Has Dalam (500g)",
@@ -6,11 +7,12 @@ export const INITIAL_PRODUCTS = [
     pedagang: "Lapak Bu Joko (Daging)",
     kategori: "Daging",
     badge: "Potong Segar",
-    stok: 12,
+    stok: 15,
     rating: 4.9,
     terjual: 142,
     satuan: "500 gram",
-    deskripsi: "Daging sapi segar tanpa lemak berlebih, disembelih subuh tadi sesuai syariat halal.",
+    deskripsi: "Daging sapi tenderloin segar tanpa lemak berlebih, disembelih subuh tadi sesuai syariat halal.",
+    gambar: "https://down-id.img.susercontent.com/file/63d2c9108317916216c960128b6d4edd",
     icon: "🥩",
     warnaBg: "#FFEBEB"
   },
@@ -25,10 +27,13 @@ export const INITIAL_PRODUCTS = [
     rating: 4.8,
     terjual: 215,
     satuan: "1 ekor (0.9 - 1.1 kg)",
-    deskripsi: "Ayam negeri segar bersih, sudah dicuci dan siap dipotong sesuai permintaan.",
+    deskripsi: "Ayam negeri segar bersih, sudah dicuci dan siap dipotong sesuai permintaan pembeli.",
+    gambar: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500&auto=format&fit=crop&q=80",
     icon: "🍗",
     warnaBg: "#FFF3E0"
   },
+
+  // --- KATEGORI: SAYUR (Lapak Pak Slamet) ---
   {
     id: 103,
     nama: "Sayur Bayam Hidroponik Ikat",
@@ -41,6 +46,7 @@ export const INITIAL_PRODUCTS = [
     terjual: 380,
     satuan: "1 ikat besar",
     deskripsi: "Bayam hijau segar renyah langsung dari kebun mitra petani lokal pagi hari.",
+    gambar: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=500&auto=format&fit=crop&q=80",
     icon: "🥬",
     warnaBg: "#E8F5E9"
   },
@@ -56,74 +62,51 @@ export const INITIAL_PRODUCTS = [
     terjual: 190,
     satuan: "500 gram",
     deskripsi: "Wortel segar tanah tinggi, manis, renyah, sangat cocok untuk sup dan jus sehat.",
+    gambar: "https://tse1.mm.bing.net/th/id/OIP.WZph7VBLF6LHym5IKaUklgHaEK?r=0&rs=1&pid=ImgDetMain&o=7&rm=3",
     icon: "🥕",
     warnaBg: "#FFF8E1"
   },
+
+  // --- KATEGORI: BUMBU (Lapak Pak Slamet) ---
   {
     id: 105,
-    nama: "Cabai Rawit Merah Pedas (100g)",
-    harga: 12000,
-    pedagang: "Lapak Pak Slamet (Sayur)",
-    kategori: "Sayur",
-    badge: "Super Pedas",
-    stok: 25,
-    rating: 4.8,
-    terjual: 410,
-    satuan: "100 gram",
-    deskripsi: "Cabai rawit merah segar oranye menyala, pedas menggigit untuk sambal mantap.",
-    icon: "🌶️",
-    warnaBg: "#FFEBEE"
-  },
-  {
-    id: 106,
-    nama: "Bumbu Racik Rendang Instan",
-    harga: 4500,
-    pedagang: "Lapak Mak Sumi (Bumbu)",
-    kategori: "Bumbu",
-    badge: "Resep Warisan",
-    stok: 50,
-    rating: 4.9,
-    terjual: 520,
-    satuan: "1 sachet kemasan",
-    deskripsi: "Racikan rempah tradisional Minang otentik, praktis dan wangi meresap sampai ke serat daging.",
-    icon: "🥣",
-    warnaBg: "#FFFDE7"
-  },
-  {
-    id: 107,
-    nama: "Bawang Merah Brebes Besar (250g)",
+    nama: "Bawang Merah Brebes Pilihan (250g)",
     harga: 15000,
-    pedagang: "Lapak Mak Sumi (Bumbu)",
+    pedagang: "Lapak Pak Slamet (Sayur)",
     kategori: "Bumbu",
     badge: "Grade A Brebes",
     stok: 35,
     rating: 4.8,
     terjual: 310,
     satuan: "250 gram",
-    deskripsi: "Bawang merah Brebes kering pilihan, aroma tajam sedap, tidak gampang busuk.",
+    deskripsi: "Bawang merah Brebes kering pilihan, aroma tajam sedap dan tidak mudah busuk.",
+    gambar: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=500&auto=format&fit=crop&q=80",
     icon: "🧅",
     warnaBg: "#F3E5F5"
   },
   {
-    id: 108,
-    nama: "Cumi Asin Kering Premium (200g)",
-    harga: 22000,
-    pedagang: "Kios Seafood Cak To",
-    kategori: "Seafood",
-    badge: "Gurih Alami",
-    stok: 18,
-    rating: 4.7,
-    terjual: 164,
-    satuan: "200 gram",
-    deskripsi: "Cumi asin telur empuk, proses pengeringan higienis tanpa formalin atau zat pengawet.",
-    icon: "🦑",
-    warnaBg: "#E0F7FA"
+    id: 106,
+    nama: "Cabai Rawit Merah Super (150g)",
+    harga: 14000,
+    pedagang: "Lapak Pak Slamet (Sayur)",
+    kategori: "Bumbu",
+    badge: "Super Pedas",
+    stok: 25,
+    rating: 4.8,
+    terjual: 410,
+    satuan: "150 gram",
+    deskripsi: "Cabai rawit merah segar oranye menyala, pedas menggigit untuk sambal mantap.",
+    gambar: "https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=500&auto=format&fit=crop&q=80",
+    icon: "🌶️",
+    warnaBg: "#FFEBEE"
   },
+
+  // --- KATEGORI: SEAFOOD (Lapak Bu Joko) ---
   {
-    id: 109,
+    id: 107,
     nama: "Ikan Nila Segar Hidup (1kg)",
     harga: 32000,
-    pedagang: "Kios Seafood Cak To",
+    pedagang: "Lapak Bu Joko (Daging)",
     kategori: "Seafood",
     badge: "Langsung Kolam",
     stok: 15,
@@ -131,14 +114,33 @@ export const INITIAL_PRODUCTS = [
     terjual: 188,
     satuan: "1 kg (isi 3-4 ekor)",
     deskripsi: "Ikan nila air tawar segar, bisa minta dibersihkan sisik dan isi perutnya langsung.",
+    gambar: "https://regalsprings.co.id/wp-content/uploads/2023/10/ikan-tilapia-07-Large.jpeg",
     icon: "🐟",
-    warnaBg: "#E1F5FE"
+    warnaBg: "#E0F7FA"
   },
   {
-    id: 110,
+    id: 108,
+    nama: "Udang Vaname Segar Laut (500g)",
+    harga: 46000,
+    pedagang: "Lapak Bu Joko (Daging)",
+    kategori: "Seafood",
+    badge: "Tangkapan Pagi",
+    stok: 12,
+    rating: 4.8,
+    terjual: 175,
+    satuan: "500 gram (sedang)",
+    deskripsi: "Udang vaname segar kulit bening kenyal, manis gurih tanpa formalin atau pengawet.",
+    gambar: "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=500&auto=format&fit=crop&q=80",
+    icon: "🦐",
+    warnaBg: "#FFF3E0"
+  },
+
+  // --- KATEGORI: SEMBAKO (Lapak Pak Slamet) ---
+  {
+    id: 109,
     nama: "Tempe Daun Tradisional (2 Pcs)",
     harga: 6000,
-    pedagang: "Lapak Tahu Tempe Pakde",
+    pedagang: "Lapak Pak Slamet (Sayur)",
     kategori: "Sembako",
     badge: "Kedelai Alami",
     stok: 40,
@@ -146,14 +148,15 @@ export const INITIAL_PRODUCTS = [
     terjual: 460,
     satuan: "2 bungkus daun",
     deskripsi: "Tempe fermentasi bungkus daun pisang harum khas, padat kedelai dan higienis.",
+    gambar: "https://down-id.img.susercontent.com/file/id-11134207-23030-8wnzywin6hovda",
     icon: "🧈",
     warnaBg: "#EFEBE9"
   },
   {
-    id: 111,
+    id: 110,
     nama: "Tahu Putih Lembut Sutra (10 Pcs)",
     harga: 7000,
-    pedagang: "Lapak Tahu Tempe Pakde",
+    pedagang: "Lapak Pak Slamet (Sayur)",
     kategori: "Sembako",
     badge: "Tanpa Pengawet",
     stok: 35,
@@ -161,14 +164,17 @@ export const INITIAL_PRODUCTS = [
     terjual: 390,
     satuan: "1 bungkus (10 pcs)",
     deskripsi: "Tahu putih bersih kenyal lembut, diproduksi setiap subuh tanpa bahan kimia pengawet.",
+    gambar: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80",
     icon: "⬜",
     warnaBg: "#FAFAFA"
   },
+
+  // --- KATEGORI: BUAH (Lapak Bu Joko) ---
   {
-    id: 112,
+    id: 111,
     nama: "Jeruk Medan Manis Segar (1kg)",
     harga: 24000,
-    pedagang: "Kios Buah Segar Berkah",
+    pedagang: "Lapak Bu Joko (Daging)",
     kategori: "Buah",
     badge: "Manis Berair",
     stok: 22,
@@ -176,8 +182,25 @@ export const INITIAL_PRODUCTS = [
     terjual: 230,
     satuan: "1 kg",
     deskripsi: "Jeruk Medan pilihan berkulit tipis, air melimpah manis segar kaya vitamin C.",
+    gambar: "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=500&auto=format&fit=crop&q=80",
     icon: "🍊",
     warnaBg: "#FFF3E0"
+  },
+  {
+    id: 112,
+    nama: "Pisang Cavendish Sisir Segar (1 Sisir)",
+    harga: 22000,
+    pedagang: "Lapak Bu Joko (Daging)",
+    kategori: "Buah",
+    badge: "Matang Alami",
+    stok: 16,
+    rating: 4.9,
+    terjual: 195,
+    satuan: "1 sisir (1.2 - 1.5 kg)",
+    deskripsi: "Pisang cavendish kulit mulus kuning cerah, manis legit bebas karbitan.",
+    gambar: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500&auto=format&fit=crop&q=80",
+    icon: "🍌",
+    warnaBg: "#FFFDE7"
   }
 ];
 
@@ -185,7 +208,7 @@ export const INITIAL_MERCHANTS = {
   "Lapak Bu Joko (Daging)": {
     id: "m-01",
     nama: "Lapak Bu Joko (Daging)",
-    kategori: "Daging & Unggas",
+    kategori: "Daging, Seafood & Buah",
     lokasiLapak: "Blok Daging A-04, Pasar Sentral",
     pemilik: "Ibu Joko Sri Wahyuni",
     saldo: 99000,
@@ -193,77 +216,21 @@ export const INITIAL_MERCHANTS = {
     rating: 4.9,
     telp: "0812-3456-7890",
     avatar: "🥩",
-    deskripsi: "Mitra daging sapi dan ayam potong segar sejak tahun 2011.",
+    deskripsi: "Mitra daging sapi, ayam potong segar, aneka hasil laut, dan buah pilihan sejak tahun 2011.",
     notifSuara: true
   },
   "Lapak Pak Slamet (Sayur)": {
     id: "m-02",
     nama: "Lapak Pak Slamet (Sayur)",
-    kategori: "Sayuran Segar",
+    kategori: "Sayuran, Bumbu & Sembako",
     lokasiLapak: "Blok Sayur B-12, Pasar Sentral",
     pemilik: "Bapak Slamet Riyadi",
-    saldo: 25000,
+    saldo: 45000,
     totalPencairan: 320000,
     rating: 4.8,
     telp: "0812-9876-5432",
     avatar: "🥬",
-    deskripsi: "Sayuran hijau hidroponik dan hasil bumi langsung dari petani lokal.",
-    notifSuara: true
-  },
-  "Lapak Mak Sumi (Bumbu)": {
-    id: "m-03",
-    nama: "Lapak Mak Sumi (Bumbu)",
-    kategori: "Bumbu & Rempah",
-    lokasiLapak: "Blok Bumbu C-03, Pasar Sentral",
-    pemilik: "Mak Sumiati",
-    saldo: 19500,
-    totalPencairan: 280000,
-    rating: 4.9,
-    telp: "0813-4567-8912",
-    avatar: "🌶️",
-    deskripsi: "Penyedia rempah Nusantara giling halus dan bumbu racik istimewa.",
-    notifSuara: true
-  },
-  "Kios Seafood Cak To": {
-    id: "m-04",
-    nama: "Kios Seafood Cak To",
-    kategori: "Ikan & Seafood",
-    lokasiLapak: "Blok Basah D-01, Pasar Sentral",
-    pemilik: "Cak Subroto",
-    saldo: 54000,
-    totalPencairan: 610000,
-    rating: 4.8,
-    telp: "0813-9988-7766",
-    avatar: "🐟",
-    deskripsi: "Ikan air tawar hidup dan aneka hasil laut segar setiap hari.",
-    notifSuara: true
-  },
-  "Lapak Tahu Tempe Pakde": {
-    id: "m-05",
-    nama: "Lapak Tahu Tempe Pakde",
-    kategori: "Tahu & Tempe",
-    lokasiLapak: "Blok Olahan B-08, Pasar Sentral",
-    pemilik: "Pakde Yono",
-    saldo: 13000,
-    totalPencairan: 190000,
-    rating: 4.9,
-    telp: "0812-3344-5566",
-    avatar: "🧈",
-    deskripsi: "Tahu sutra higienis dan tempe daun pisang tanpa bahan pengawet.",
-    notifSuara: true
-  },
-  "Kios Buah Segar Berkah": {
-    id: "m-06",
-    nama: "Kios Buah Segar Berkah",
-    kategori: "Buah-buahan",
-    lokasiLapak: "Blok Buah E-02, Pasar Sentral",
-    pemilik: "Mbak Sri Rejeki",
-    saldo: 24000,
-    totalPencairan: 340000,
-    rating: 4.8,
-    telp: "0812-7788-9900",
-    avatar: "🍊",
-    deskripsi: "Aneka buah lokal manis segar pilihan terbaik pasar tradisional.",
+    deskripsi: "Sayuran hijau hidroponik, bumbu dapur segar, dan tahu tempe higienis dari petani lokal.",
     notifSuara: true
   }
 };
@@ -308,8 +275,8 @@ export const INITIAL_ORDERS = [
     },
     metodeKirim: "Delivery (Kurir Hub)",
     ongkirFlat: 5000,
-    totalBarang: 74500,
-    totalBayar: 79500,
+    totalBarang: 70000,
+    totalBayar: 75000,
     metodeBayar: "QRIS",
     statusEscrow: "Dana Ditahan di Escrow PasarHub",
     tahapStatus: "konsolidasi_hub", // menunggu_bayar, diproses_pedagang, konsolidasi_hub, sedang_diantar, selesai
@@ -334,16 +301,6 @@ export const INITIAL_ORDERS = [
         totalSub: 5000,
         statusLapak: "Sudah diantar ke Hub",
         waktuSerah: "08:18 WIB"
-      },
-      {
-        idSub: "SUB-101-C",
-        pedagang: "Lapak Mak Sumi (Bumbu)",
-        items: [
-          { nama: "Bumbu Racik Rendang Instan", qty: 1, harga: 4500 }
-        ],
-        totalSub: 4500,
-        statusLapak: "Sedang disiapkan",
-        waktuSerah: null
       }
     ]
   }

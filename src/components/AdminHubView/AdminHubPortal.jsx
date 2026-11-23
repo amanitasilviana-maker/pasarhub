@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { 
-  ShieldCheck, 
-  BarChart3, 
-  PackageCheck, 
-  Users, 
-  TrendingUp, 
-  Clock, 
-  QrCode, 
+import {
+  ShieldCheck,
+  BarChart3,
+  PackageCheck,
+  Users,
+  TrendingUp,
+  Clock,
+  QrCode,
   AlertCircle,
   Truck,
   CheckCircle2,
@@ -17,18 +17,23 @@ import {
   RefreshCw,
   Wallet
 } from 'lucide-react';
+import confetti from 'canvas-confetti';
 import { useNavigate } from 'react-router-dom';
 
-export default function AdminHubPortal({ 
-  orders, 
-  merchants, 
-  couriers, 
-  onConsolidateOrder, 
+export default function AdminHubPortal({
+  orders,
+  merchants,
+  couriers,
+  dbStalls = [],
+  dbCouriers = [],
+  onConsolidateOrder,
   onAssignCourier,
+  onApproveStall,
+  onApproveCourier,
   currentAdmin
 }) {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('konsolidasi'); // 'konsolidasi', 'analitik', 'dispute', 'kurir'
+  const [activeTab, setActiveTab] = useState('konsolidasi'); // 'konsolidasi', 'verifikasi', 'analitik', 'dispute', 'kurir'
   const [selectedCourierMap, setSelectedCourierMap] = useState({});
   const [loginAlert, setLoginAlert] = useState("");
 
@@ -45,6 +50,10 @@ export default function AdminHubPortal({
   const totalDisbursed = orders
     .filter(o => o.tahapStatus === 'selesai' || o.statusEscrow.includes('100%'))
     .reduce((sum, o) => sum + o.totalBarang, 0) + 18450000;
+
+  const pendingStallsCount = dbStalls.filter(s => !s.is_approved).length;
+  const pendingCouriersCount = dbCouriers.filter(c => c.verification_status !== 'VERIFIED').length;
+  const totalPendingVerifications = pendingStallsCount + pendingCouriersCount;
 
   const handleCourierChange = (idInduk, courierName) => {
     setSelectedCourierMap(prev => ({ ...prev, [idInduk]: courierName }));
@@ -75,10 +84,10 @@ export default function AdminHubPortal({
               🔒 Mode Pratinjau — Anda Belum Login sebagai Admin Paguyuban
             </div>
             <div style={{ fontSize: '12px', color: '#B91C1C', marginTop: '2px' }}>
-              Silakan login untuk memverifikasi konsolidasi barang dan menugaskan armada kurir.
+              Silakan login untuk memverifikasi konsolidasi barang, menyetujui mitra, dan menugaskan armada kurir.
             </div>
           </div>
-          <button 
+          <button
             style={{ background: '#1E293B', color: 'white', border: 'none', padding: '8px 18px', borderRadius: '2px', fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}
             onClick={() => navigate('/login-admin')}
           >
@@ -92,6 +101,7 @@ export default function AdminHubPortal({
           {loginAlert}
         </div>
       )}
+
       {/* Top Header & Tab Navigation */}
       <div style={{ background: 'white', padding: '16px 20px', borderRadius: '2px', marginBottom: '20px', border: '1px solid #E5E9EF', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
         <div>
@@ -109,7 +119,7 @@ export default function AdminHubPortal({
         </div>
 
         {/* Tab Pills */}
-        <div style={{ display: 'flex', gap: '6px', background: '#F1F5F9', padding: '4px', borderRadius: '2px' }}>
+        <div style={{ display: 'flex', gap: '6px', background: '#F1F5F9', padding: '4px', borderRadius: '2px', flexWrap: 'wrap' }}>
           <button
             className={`role-pill-btn ${activeTab === 'konsolidasi' ? 'active' : ''}`}
             onClick={() => setActiveTab('konsolidasi')}
@@ -117,6 +127,15 @@ export default function AdminHubPortal({
           >
             <PackageCheck size={14} />
             <span>Stasiun Konsolidasi Hub</span>
+          </button>
+
+          <button
+            className={`role-pill-btn ${activeTab === 'verifikasi' ? 'active' : ''}`}
+            onClick={() => setActiveTab('verifikasi')}
+            style={{ fontSize: '12px' }}
+          >
+            <ShieldCheck size={14} />
+            <span>Verifikasi Mitra ({totalPendingVerifications})</span>
           </button>
 
           <button
@@ -238,10 +257,10 @@ export default function AdminHubPortal({
                   </div>
 
                   <div style={{ textAlign: 'right' }}>
-                    <span style={{ 
-                      fontSize: '11px', 
-                      fontWeight: 800, 
-                      padding: '4px 10px', 
+                    <span style={{
+                      fontSize: '11px',
+                      fontWeight: 800,
+                      padding: '4px 10px',
                       borderRadius: '20px',
                       background: isDispatched ? '#DCFCE7' : isFullyConsolidated ? '#FEF3C7' : '#E0F2FE',
                       color: isDispatched ? '#15803D' : isFullyConsolidated ? '#B45309' : '#0369A1'
@@ -280,9 +299,9 @@ export default function AdminHubPortal({
                         </div>
 
                         <div style={{ textAlign: 'right' }}>
-                          <span style={{ 
-                            fontSize: '11px', 
-                            fontWeight: 700, 
+                          <span style={{
+                            fontSize: '11px',
+                            fontWeight: 700,
                             color: isArrived ? '#16A34A' : '#D97706',
                             background: isArrived ? '#DCFCE7' : '#FEF3C7',
                             padding: '3px 8px',
@@ -304,7 +323,7 @@ export default function AdminHubPortal({
                       <span style={{ fontSize: '13px', fontWeight: 700, color: '#334155' }}>
                         Pilih Kurir Internal Pasar:
                       </span>
-                      <select 
+                      <select
                         style={{ padding: '6px 12px', borderRadius: '2px', border: '1px solid #CBD5E1', fontSize: '13px', fontWeight: 600 }}
                         value={selectedCourierMap[order.idInduk] || couriers[0].nama}
                         onChange={(e) => handleCourierChange(order.idInduk, e.target.value)}
@@ -319,7 +338,7 @@ export default function AdminHubPortal({
 
                     <button
                       className="add-btn"
-                      style={{ 
+                      style={{
                         background: '#00AA13',
                         opacity: isFullyConsolidated ? 1 : 0.8
                       }}
@@ -341,10 +360,143 @@ export default function AdminHubPortal({
         </div>
       )}
 
-      {/* TAB 2: ANALITIK & ARUS KAS ESCROW */}
+      {/* TAB 2: VERIFIKASI PENDAFTARAN MITRA & KURIR */}
+      {activeTab === 'verifikasi' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {/* Antrean Verifikasi Lapak Pedagang */}
+          <div style={{ background: 'white', borderRadius: '2px', padding: '20px', border: '1.5px solid #E5E9EF' }}>
+            <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#111827', marginBottom: '4px' }}>
+              Antrean Verifikasi Lapak Pedagang Pasar
+            </h3>
+            <p style={{ fontSize: '12px', color: '#6B7280', marginBottom: '16px' }}>
+              Lapak yang disetujui akan otomatis berstatus VERIFIED dan produknya langsung tampil di katalog konsumen.
+            </p>
+
+            {dbStalls.length === 0 ? (
+              <p style={{ fontSize: '13px', color: '#64748B' }}>Belum ada data lapak dari database.</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {dbStalls.map((stall) => (
+                  <div key={stall.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', padding: '14px', border: '1px solid #E2E8F0', borderRadius: '2px', background: stall.is_approved ? '#F8FAFC' : '#FFFBEB' }}>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <strong style={{ fontSize: '14px', color: '#111827' }}>{stall.stall_name}</strong>
+                        <span style={{
+                          fontSize: '11px',
+                          fontWeight: 700,
+                          padding: '2px 8px',
+                          borderRadius: '2px',
+                          background: stall.is_approved ? '#DCFCE7' : '#FEF3C7',
+                          color: stall.is_approved ? '#15803D' : '#B45309'
+                        }}>
+                          {stall.is_approved ? '✓ Terverifikasi & Aktif' : '⏳ Menunggu Review'}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: '12px', color: '#64748B', marginTop: '4px' }}>
+                        Pemilik: <strong>{stall.user?.name}</strong> ({stall.user?.phone}) • Lokasi: {stall.block_number}
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      {!stall.is_approved ? (
+                        <button
+                          onClick={() => {
+                            if (!currentAdmin) return setLoginAlert('⚠️ Login Admin terlebih dahulu untuk menyetujui mitra.');
+                            onApproveStall && onApproveStall(stall.id, true);
+                          }}
+                          style={{ background: '#00AA13', color: 'white', border: 'none', padding: '8px 14px', borderRadius: '2px', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}
+                        >
+                          ✓ Setujui &amp; Tayangkan Lapak
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            if (!currentAdmin) return setLoginAlert('⚠️ Login Admin terlebih dahulu untuk mengubah status mitra.');
+                            onApproveStall && onApproveStall(stall.id, false);
+                          }}
+                          style={{ background: '#FEE2E2', color: '#DC2626', border: '1px solid #FECACA', padding: '6px 12px', borderRadius: '2px', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}
+                        >
+                          Tangguhkan Lapak
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Antrean Verifikasi Kurir Internal */}
+          <div style={{ background: 'white', borderRadius: '2px', padding: '20px', border: '1.5px solid #E5E9EF' }}>
+            <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#111827', marginBottom: '4px' }}>
+              Verifikasi Dokumen Kurir Internal Pasar
+            </h3>
+            <p style={{ fontSize: '12px', color: '#6B7280', marginBottom: '16px' }}>
+              Pastikan kelengkapan KTP domisili sekitar pasar, SIM C, dan STNK aktif sebelum mengaktifkan akun kurir.
+            </p>
+
+            {dbCouriers.length === 0 ? (
+              <p style={{ fontSize: '13px', color: '#64748B' }}>Belum ada data kurir dari database.</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {dbCouriers.map((courier) => {
+                  const isVerified = courier.verification_status === 'VERIFIED';
+                  return (
+                    <div key={courier.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', padding: '14px', border: '1px solid #E2E8F0', borderRadius: '2px', background: isVerified ? '#F8FAFC' : '#FEF2F2' }}>
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <strong style={{ fontSize: '14px', color: '#111827' }}>{courier.name}</strong>
+                          <span style={{
+                            fontSize: '11px',
+                            fontWeight: 700,
+                            padding: '2px 8px',
+                            borderRadius: '2px',
+                            background: isVerified ? '#DCFCE7' : '#FEE2E2',
+                            color: isVerified ? '#15803D' : '#991B1B'
+                          }}>
+                            {isVerified ? '✓ Kurir Terverifikasi' : '🔒 Belum Diverifikasi'}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: '12px', color: '#64748B', marginTop: '4px' }}>
+                          Kontak: {courier.phone} {courier.email ? `• ${courier.email}` : ''}
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        {!isVerified ? (
+                          <button
+                            onClick={() => {
+                              if (!currentAdmin) return setLoginAlert('⚠️ Login Admin terlebih dahulu untuk memverifikasi kurir.');
+                              onApproveCourier && onApproveCourier(courier.id, true);
+                            }}
+                            style={{ background: '#0284C7', color: 'white', border: 'none', padding: '8px 14px', borderRadius: '2px', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}
+                          >
+                            ✓ Verifikasi Dokumen Kurir
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              if (!currentAdmin) return setLoginAlert('⚠️ Login Admin terlebih dahulu untuk mengubah status kurir.');
+                              onApproveCourier && onApproveCourier(courier.id, false);
+                            }}
+                            style={{ background: '#FEE2E2', color: '#DC2626', border: '1px solid #FECACA', padding: '6px 12px', borderRadius: '2px', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}
+                          >
+                            Nonaktifkan Kurir
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* TAB 3: ANALITIK & ARUS KAS ESCROW */}
       {activeTab === 'analitik' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {/* Smart Escrow Transparency Card */}
           <div style={{ background: 'white', borderRadius: '2px', padding: '24px', border: '1.5px solid #E5E9EF' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
               <div style={{ width: '40px', height: '40px', borderRadius: '2px', background: '#DCFCE7', color: '#16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -416,7 +568,7 @@ export default function AdminHubPortal({
         </div>
       )}
 
-      {/* TAB 3: ARMADA KURIR */}
+      {/* TAB 4: ARMADA KURIR */}
       {activeTab === 'kurir' && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
           {couriers.map(c => (
@@ -450,7 +602,7 @@ export default function AdminHubPortal({
         </div>
       )}
 
-      {/* TAB 4: DISPUTE RESOLUTION */}
+      {/* TAB 5: DISPUTE RESOLUTION */}
       {activeTab === 'dispute' && (
         <div style={{ background: 'white', borderRadius: '2px', padding: '24px', border: '1px solid #E5E9EF' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>

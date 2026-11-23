@@ -24,10 +24,22 @@ app.use(express.json());
 app.get('/api/v1/products', async (req, res) => {
     try {
         const products = await prisma.product.findMany({
+            where: {
+                stall: {
+                    is_approved: true,
+                    is_open: true,
+                    user: {
+                        verification_status: 'VERIFIED'
+                    },
+                    market: {
+                        status: 'ACTIVE'
+                    }
+                }
+            },
             include: { stall: true },
             orderBy: { name: 'asc' }
         });
-        // Format agar langsung cocok dengan tampilan React
+
         const formatted = products.map((p) => ({
             id: p.id,
             nama: p.name,
@@ -72,7 +84,8 @@ app.post('/api/v1/products', async (req, res) => {
             nama: newProd.name,
             harga: Number(newProd.price),
             kategori: newProd.category,
-            pedagang: newProd.stall.stall_name
+            pedagang: newProd.stall.stall_name,
+            is_approved: newProd.stall.is_approved
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -80,7 +93,99 @@ app.post('/api/v1/products', async (req, res) => {
 });
 
 // ==========================================
-// 2. API PESANAN & PEMECAHAN SUB-ORDER
+// 2. API ONBOARDING & VERIFIKASI ADMIN HUB
+// ==========================================
+app.get('/api/v1/admin/verifications', async (req, res) => {
+    try {
+        const stalls = await prisma.merchantStall.findMany({
+            include: { user: true }
+        });
+        const couriers = await prisma.user.findMany({
+            where: { role: 'COURIER' }
+        });
+        res.json({ stalls, couriers });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/api/v1/merchants/register', async (req, res) => {
+    try {
+        const { name, phone, stall_name, block_number, id_card_url } = req.body;
+        const market = await prisma.market.findFirst();
+        if (!market) return res.status(404).json({ error: 'Data pasar belum dikonfigurasi' });
+
+        const newMerchant = await prisma.user.create({
+            data: {
+                market_id: market.id,
+                name,
+                phone,
+                password_hash: 'pending_setup',
+                role: 'MERCHANT',
+                verification_status: 'PENDING_REVIEW',
+                id_card_url: id_card_url || null,
+                stalls: {
+                    create: {
+                        market_id: market.id,
+                        stall_name,
+                        block_number,
+                        is_open: true,
+                        is_approved: false
+                    }
+                }
+            },
+            include: { stalls: true }
+        });
+
+        io.emit('data:updated');
+        res.status(201).json(newMerchant);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.patch('/api/v1/admin/stalls/:id/approval', async (req, res) => {
+    try {
+        const { isApproved } = req.body;
+        const stall = await prisma.merchantStall.update({
+            where: { id: req.params.id },
+            data: {
+                is_approved: Boolean(isApproved),
+                user: {
+                    update: {
+                        verification_status: isApproved ? 'VERIFIED' : 'REJECTED'
+                    }
+                }
+            },
+            include: { user: true }
+        });
+
+        io.emit('data:updated');
+        res.json({ message: 'Status lapak berhasil diperbarui', stall });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.patch('/api/v1/admin/couriers/:id/approval', async (req, res) => {
+    try {
+        const { isVerified } = req.body;
+        const courier = await prisma.user.update({
+            where: { id: req.params.id },
+            data: {
+                verification_status: isVerified ? 'VERIFIED' : 'REJECTED'
+            }
+        });
+
+        io.emit('data:updated');
+        res.json({ message: 'Status kurir berhasil diperbarui', courier });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ==========================================
+// 3. API PESANAN & PEMECAHAN SUB-ORDER
 // ==========================================
 app.get('/api/v1/orders', async (req, res) => {
     try {
@@ -109,11 +214,13 @@ app.post('/api/v1/orders', async (req, res) => {
         const market = await prisma.market.findFirst();
         const customer = await prisma.user.findFirst({ where: { role: 'CUSTOMER' } });
 
-        // Kelompokkan item per lapak (Order Splitting)
         const grouped = {};
         for (const item of items) {
             const dbProd = await prisma.product.findFirst({
-                where: { name: item.nama },
+                where: {
+                    name: item.nama,
+                    stall: { is_approved: true }
+                },
                 include: { stall: true }
             });
             if (!dbProd) continue;
@@ -125,8 +232,13 @@ app.post('/api/v1/orders', async (req, res) => {
             grouped[dbProd.stall_id].items.push({
                 product_id: dbProd.id,
                 quantity: item.qty,
-                price_snapshot: dbProd.price
+                price_snapshot: dbProd.price,
+                notes: item.notes || null
             });
+        }
+
+        if (Object.keys(grouped).length === 0) {
+            return res.status(400).json({ error: 'Tidak ada produk valid dari lapak terverifikasi' });
         }
 
         const createdOrder = await prisma.masterOrder.create({
@@ -160,7 +272,6 @@ app.post('/api/v1/orders', async (req, res) => {
     }
 });
 
-// Pedagang mengantar SubOrder ke Hub
 app.patch('/api/v1/sub-orders/:id/ready', async (req, res) => {
     try {
         const subOrder = await prisma.subOrder.update({
@@ -168,7 +279,6 @@ app.patch('/api/v1/sub-orders/:id/ready', async (req, res) => {
             data: { stall_status: 'READY_AT_HUB' }
         });
 
-        // Cek apakah semua SubOrder dalam MasterOrder sudah tiba di Hub
         const allSubs = await prisma.subOrder.findMany({
             where: { master_order_id: subOrder.master_order_id }
         });
@@ -189,11 +299,13 @@ app.patch('/api/v1/sub-orders/:id/ready', async (req, res) => {
 });
 
 // ==========================================
-// 3. KONSOLIDASI HUB & PENCAIRAN ESCROW
+// 4. KONSOLIDASI HUB & PENCAIRAN ESCROW
 // ==========================================
 app.patch('/api/v1/orders/:id/consolidate', async (req, res) => {
     try {
-        const courier = await prisma.user.findFirst({ where: { role: 'COURIER' } });
+        const courier = await prisma.user.findFirst({
+            where: { role: 'COURIER', verification_status: 'VERIFIED' }
+        });
         const updated = await prisma.masterOrder.update({
             where: { id: req.params.id },
             data: {
@@ -219,7 +331,6 @@ app.patch('/api/v1/orders/:id/complete', async (req, res) => {
             include: { sub_orders: { include: { stall: true } } }
         });
 
-        // Cairkan dana Escrow 100% ke saldo masing-masing pedagang di Supabase
         for (const sub of order.sub_orders) {
             const updatedUser = await prisma.user.update({
                 where: { id: sub.stall.user_id },
@@ -244,7 +355,6 @@ app.patch('/api/v1/orders/:id/complete', async (req, res) => {
     }
 });
 
-// Serve React build jika tersedia
 const distPath = path.join(__dirname, 'dist');
 if (fs.existsSync(distPath)) {
     app.use(express.static(distPath));

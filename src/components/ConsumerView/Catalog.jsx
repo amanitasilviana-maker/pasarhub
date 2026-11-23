@@ -1,25 +1,25 @@
 import React, { useState, useMemo } from 'react';
-import { 
-  Search, 
-  MapPin, 
-  Clock, 
-  Sparkles, 
-  Store, 
-  Plus, 
-  Minus, 
-  Star, 
-  ShieldCheck, 
+import {
+  Search,
+  MapPin,
+  Clock,
+  Sparkles,
+  Store,
+  Plus,
+  Minus,
+  Star,
+  ShieldCheck,
   ChevronRight,
   Tag
 } from 'lucide-react';
 import { CATEGORIES } from '../../data/mockData';
 
-export default function Catalog({ 
-  products, 
-  cart, 
-  onAddToCart, 
-  onRemoveFromCart, 
-  onOpenCart 
+export default function Catalog({
+  products,
+  cart,
+  onAddToCart,
+  onRemoveFromCart,
+  onOpenCart
 }) {
   const [selectedCategory, setSelectedCategory] = useState('semua');
   const [selectedStall, setSelectedStall] = useState('semua');
@@ -68,29 +68,69 @@ export default function Catalog({
       </div>
 
       {/* Hero Promotion Banner */}
-      <div className="hero-card">
-        <div className="hero-tag">
+      <div
+        className="hero-card"
+        style={{
+          background:
+            "linear-gradient(90deg, rgba(0, 45, 5, 0.90) 0%, rgba(0, 95, 10, 0.78) 55%, rgba(17, 24, 39, 0.55) 100%), url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat",
+          color: '#FFFFFF',
+          borderRadius: '0px',
+          borderBottom: '4px solid #00AA13',
+        }}
+      >
+        <div
+          className="hero-tag"
+          style={{
+            backgroundColor: '#FF8106',
+            color: '#FFFFFF',
+            borderRadius: '0px',
+          }}
+        >
           <Sparkles size={12} />
           <span>Solusi Belanja Hiperlokal Mandiri</span>
         </div>
-        <h2 className="hero-title">
+        <h2 className="hero-title" style={{ color: '#FFFFFF' }}>
           Belanja dari Banyak Lapak Pasar,<br />
           Ongkir Cuma Sekali (Flat Rp 5.000)!
         </h2>
-        <p className="hero-subtitle">
+        <p className="hero-subtitle" style={{ color: '#E5E7EB' }}>
           Sistem konsolidasi Hub-and-Spoke memungkinkan Anda menggabungkan sayur, daging, bumbu, dan ikan dalam 1 keranjang tanpa biaya berulang. 100% bebas potongan komisi untuk pedagang lokal!
         </p>
 
         <div className="hero-stats-row">
-          <div className="hero-stat-pill">
+          <div
+            className="hero-stat-pill"
+            style={{
+              backgroundColor: 'rgba(0, 45, 5, 0.72)',
+              border: '1px solid rgba(134, 239, 172, 0.45)',
+              color: '#FFFFFF',
+              borderRadius: '0px',
+            }}
+          >
             <Store size={14} />
             <span>Katalog Gabungan Multi-Pedagang</span>
           </div>
-          <div className="hero-stat-pill">
+          <div
+            className="hero-stat-pill"
+            style={{
+              backgroundColor: 'rgba(0, 45, 5, 0.72)',
+              border: '1px solid rgba(134, 239, 172, 0.45)',
+              color: '#FFFFFF',
+              borderRadius: '0px',
+            }}
+          >
             <ShieldCheck size={14} />
             <span>Garansi Rekening Bersama Escrow</span>
           </div>
-          <div className="hero-stat-pill">
+          <div
+            className="hero-stat-pill"
+            style={{
+              backgroundColor: 'rgba(0, 45, 5, 0.72)',
+              border: '1px solid rgba(134, 239, 172, 0.45)',
+              color: '#FFFFFF',
+              borderRadius: '0px',
+            }}
+          >
             <Tag size={14} />
             <span>Harga Transparan Langsung Lapak</span>
           </div>
@@ -151,13 +191,13 @@ export default function Catalog({
           </span>
         </h2>
         {cart.length > 0 && (
-          <button 
+          <button
             onClick={onOpenCart}
-            style={{ 
-              background: 'none', 
-              border: 'none', 
-              color: '#00AA13', 
-              fontSize: '13px', 
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#00AA13',
+              fontSize: '13px',
               fontWeight: 700,
               cursor: 'pointer',
               display: 'flex',
@@ -179,13 +219,37 @@ export default function Catalog({
           return (
             <div key={product.id} className="product-card">
               <div className="product-card-top">
-                <div 
-                  className="product-icon-wrap" 
-                  style={{ backgroundColor: product.warnaBg || '#F3F4F6' }}
+                <div
+                  className="product-icon-wrap"
+                  style={{
+                    backgroundColor: product.warnaBg || '#F3F4F6',
+                    overflow: 'hidden',
+                    position: 'relative'
+                  }}
                 >
-                  <span>{product.icon || '🥬'}</span>
+                  {product.gambar && (
+                    <img
+                      src={product.gambar}
+                      alt={product.nama}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        borderRadius: '6px',
+                        display: 'block'
+                      }}
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        if (e.currentTarget.nextElementSibling) {
+                          e.currentTarget.nextElementSibling.style.display = 'inline';
+                        }
+                      }}
+                    />
+                  )}
+                  <span style={{ display: product.gambar ? 'none' : 'inline' }}>
+                    {product.icon || '🥬'}
+                  </span>
                 </div>
-                
                 <div className="product-details">
                   <div className="merchant-badge">
                     <Store size={10} />
@@ -196,7 +260,7 @@ export default function Catalog({
                   <p className="product-desc">
                     {product.deskripsi || `Produk segar pilihan langsung dari ${product.pedagang}.`}
                   </p>
-                  
+
                   <div className="product-meta">
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', color: '#D97706', fontWeight: 600 }}>
                       <Star size={11} fill="#D97706" /> {product.rating || '4.9'}
@@ -216,8 +280,8 @@ export default function Catalog({
                 </div>
 
                 {currentQty === 0 ? (
-                  <button 
-                    className="add-btn" 
+                  <button
+                    className="add-btn"
                     onClick={() => onAddToCart(product)}
                     aria-label={`Tambah ${product.nama}`}
                   >
@@ -225,16 +289,16 @@ export default function Catalog({
                   </button>
                 ) : (
                   <div className="qty-counter">
-                    <button 
-                      className="qty-btn" 
+                    <button
+                      className="qty-btn"
                       onClick={() => onRemoveFromCart(product.id)}
                       aria-label="Kurangi jumlah"
                     >
                       <Minus size={12} />
                     </button>
                     <span className="qty-value">{currentQty}</span>
-                    <button 
-                      className="qty-btn" 
+                    <button
+                      className="qty-btn"
                       onClick={() => onAddToCart(product)}
                       aria-label="Tambah jumlah"
                     >
@@ -253,8 +317,8 @@ export default function Catalog({
           <p style={{ fontSize: '15px', color: '#6B7280' }}>
             Tidak ada produk yang cocok dengan filter ini.
           </p>
-          <button 
-            className="add-btn" 
+          <button
+            className="add-btn"
             style={{ margin: '14px auto 0 auto' }}
             onClick={() => { setSearchQuery(''); setSelectedCategory('semua'); setSelectedStall('semua'); }}
           >
